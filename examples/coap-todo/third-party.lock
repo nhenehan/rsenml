@@ -1,0 +1,22 @@
+# Libraries the C and C# clients build from source, fetched by
+# scripts/fetch-third-party.sh into
+# ${RSENML_EXAMPLES_CACHE:-${XDG_CACHE_HOME:-~/.cache}/rsenml/examples}/coap-todo
+# (never into this working tree). Pins move only through --update NAME.
+#
+# Each line: <name> <url or path relative to this directory> <commit> [path]
+# For git, [path] makes a sparse checkout of only that directory (file contents are
+# fetched when needed). A url starting with svn: is a Subversion repository; then
+# <commit> is a revision and [path] the directory inside it.
+#
+# exip:          the C EXI library (C client), and its utils/xsd2exip tool, which
+#                runs EXIficient 1.0.7 for scripts/gen-schemas.sh.
+# libcoap:       the C CoAP library (C client), release v4.3.5b.
+# nagasenacs:    Nagasena for .NET, OpenEXI's C# EXI library (C# client); only in
+#                Subversion on SourceForge. r1188 is its last change (0000.0002.0056.1).
+# exi-testsuite: only candidates/openexi/lib, the Java Nagasena jars that
+#                scripts/gen-schemas.sh uses to compile schemas/senml.xsc.
+
+exip https://github.com/nhenehan/exip.git b2870c106f0cc88fd199208f724ce575df150444
+libcoap https://github.com/obgm/libcoap.git 851533c3cf63d16984d370ce39d586ecb3694971
+nagasenacs svn:https://svn.code.sf.net/p/openexi/code 1188 trunk/nagasenacs
+exi-testsuite https://github.com/w3c/exi-testsuite.git 23d5f587ba3ec281f1a6a8182c1450cb870b469e candidates/openexi/lib

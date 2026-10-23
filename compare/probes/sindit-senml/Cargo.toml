@@ -1,0 +1,9 @@
+# Dependency-count probe: one library, its default (or stated) features, nothing else.
+[package]
+name = "probe-sindit-senml"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+sindit-senml = "0.3"

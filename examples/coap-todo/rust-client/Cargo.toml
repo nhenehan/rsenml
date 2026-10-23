@@ -1,0 +1,17 @@
+[package]
+name = "coap-todo-rust-client"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "todo-rust"
+path = "src/main.rs"
+
+[dependencies]
+rsenml.workspace = true
+coap-lite.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,14 @@
+[package]
+name = "footprint-rsenml-cbor"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[[bin]]
+name = "footprint-rsenml-cbor"
+path = "src/main.rs"
+test = false
+bench = false
+
+[dependencies]
+rsenml = { path = "../../../crates/rsenml", default-features = false, features = ["cbor"] }

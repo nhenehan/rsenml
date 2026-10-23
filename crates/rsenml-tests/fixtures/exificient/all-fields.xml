@@ -1,0 +1,1 @@
+<sensml xmlns="urn:ietf:params:xml:ns:senml"><senml bn="urn:dev:ow:10e2073a01080063:" bt="1700000000.25" bu="W" bv="100" bs="5000" bver="10" n="power" u="W" t="-30" ut="60" s="1.5" v="-12.5"/><senml n="label" vs="Machine Room 3/B"/><senml n="open" vb="true"/><senml n="raw" vd="AAEC-__-"/><senml n="energy" s="42"/></sensml>

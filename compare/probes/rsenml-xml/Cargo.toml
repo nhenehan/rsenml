@@ -1,0 +1,9 @@
+# Dependency-count probe: one library, its default (or stated) features, nothing else.
+[package]
+name = "probe-rsenml-xml"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+rsenml = { path = "../../../crates/rsenml", default-features = false, features = ["xml"] }

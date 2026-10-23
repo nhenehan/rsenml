@@ -1,0 +1,9 @@
+# Dependency-count probe: one library, its default (or stated) features, nothing else.
+[package]
+name = "probe-coapum-senml"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+coapum-senml = "0.1"

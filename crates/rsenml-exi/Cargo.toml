@@ -1,0 +1,22 @@
+[package]
+name = "rsenml-exi"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+readme = "../../README.md"
+description = "RFC 8428 SenML EXI representation (application/senml-exi, sensml-exi): strict schema-informed EXI of the RFC schema via rexi, no_std + alloc"
+
+[dependencies]
+rsenml-core.workspace = true
+rexi-core.workspace = true
+
+[dev-dependencies]
+rsenml-json.workspace = true
+
+[lints]
+workspace = true

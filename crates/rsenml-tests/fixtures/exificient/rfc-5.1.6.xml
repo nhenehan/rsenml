@@ -1,0 +1,1 @@
+<sensml xmlns="urn:ietf:params:xml:ns:senml"><senml bn="2001:db8::2/" bt="1320078429" n="temperature" u="Cel" v="25.2"/><senml n="humidity" u="%RH" v="30"/><senml bn="2001:db8::1/" n="temperature" u="Cel" v="12.3"/><senml n="humidity" u="%RH" v="67"/></sensml>

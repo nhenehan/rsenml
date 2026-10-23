@@ -1,0 +1,1 @@
+<sensml xmlns="urn:ietf:params:xml:ns:senml"><senml n="max" v="1.7976931348623157e308"/><senml n="min" v="-1.7976931348623157e308"/><senml n="tiny" v="5e-324"/><senml n="third" v="0.3333333333333333"/><senml n="zero" v="0"/><senml n="negzero" v="-0"/><senml n="int" v="9007199254740992"/><senml n="big" v="1e21"/><senml n="small" v="1e-7"/></sensml>

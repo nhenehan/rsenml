@@ -1,0 +1,19 @@
+[package]
+name = "rsenml-tests"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+readme = "../../README.md"
+description = "rsenml conformance and interop tests: RFC 8428 examples, cross-format round trips, EXIficient reference bytes, robustness"
+publish = false
+
+[dependencies]
+rsenml = { workspace = true, features = ["json", "cbor", "xml", "exi"] }
+
+[lints]
+workspace = true

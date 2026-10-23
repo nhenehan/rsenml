@@ -1,0 +1,30 @@
+<!--
+  todo-csharp: the C# todo client. Com.AugustCellars.CoAP for CoAP, Nagasena for
+  .NET (OpenEXI's C# port, built from source by OpenEXI.Nagasena.csproj) for SenML EXI.
+
+    dotnet build csharp-client/todo-csharp.csproj -c Release
+        -p:NagasenaCsDir=<cache>/nagasenacs -o build/csharp-client/bin
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>todo-csharp</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="OpenEXI.Nagasena.csproj" />
+    <Reference Include="Sax">
+      <HintPath>$(NagasenaCsDir)/lib/saxdotnet/Sax.dll</HintPath>
+    </Reference>
+    <PackageReference Include="Com.AugustCellars.CoAP" Version="1.10.0" />
+    <!-- CoAP 1.10.0 pulls PeterO.Cbor 4.0.0 (through COSE), which has a known
+         denial-of-service bug (GHSA-6r92-cgxc-r5fg, fixed in 4.5.1). -->
+    <PackageReference Include="PeterO.Cbor" Version="4.5.5" />
+    <!-- Nagasena's compiled SenML schema (../scripts/gen-schemas.sh), copied next to the program. -->
+    <None Include="../schemas/senml.xsc" CopyToOutputDirectory="PreserveNewest" Link="senml.xsc" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,29 @@
+[package]
+name = "rsenml"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+readme = "../../README.md"
+description = "RFC 8428 Sensor Measurement Lists (SenML/SenSML) in JSON, CBOR, XML and EXI; no_std + alloc"
+
+[features]
+default = ["json", "cbor", "xml", "exi"]
+json = ["dep:rsenml-json"]
+cbor = ["dep:rsenml-cbor"]
+xml = ["dep:rsenml-xml"]
+exi = ["dep:rsenml-exi"]
+
+[dependencies]
+rsenml-core.workspace = true
+rsenml-json = { workspace = true, optional = true }
+rsenml-cbor = { workspace = true, optional = true }
+rsenml-xml = { workspace = true, optional = true }
+rsenml-exi = { workspace = true, optional = true }
+
+[lints]
+workspace = true

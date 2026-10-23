@@ -1,0 +1,23 @@
+# The CoAP todo example: its own workspace, so the rsenml workspace never builds it.
+# Build with ./build.sh or `cargo build --release` here.
+[workspace]
+members = ["server", "rust-client"]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+license = "BSD-3-Clause"
+version = "0.1.0"
+publish = false
+
+[workspace.dependencies]
+rsenml = { path = "../../crates/rsenml" }
+coap-lite = "0.13"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"

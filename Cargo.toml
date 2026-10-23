@@ -1,0 +1,53 @@
+[workspace]
+members = [
+    "crates/rsenml-core",
+    "crates/rsenml-json",
+    "crates/rsenml-cbor",
+    "crates/rsenml-xml",
+    "crates/rsenml-exi",
+    "crates/rsenml",
+    "crates/rsenml-tests",
+]
+resolver = "2"
+# compare/, examples/ and fuzz/ (cargo-fuzz, nightly) are separate workspaces, built
+# only on request.
+exclude = ["compare", "examples", "fuzz"]
+
+[workspace.package]
+edition = "2024"
+# Oldest Rust that scripts/gate.sh checks.
+rust-version = "1.88"
+license = "BSD-3-Clause"
+version = "0.9.0"
+authors = ["Nathan Henehan <nhenehan@acm.org>"]
+repository = "https://github.com/nhenehan/rsenml"
+keywords = ["senml", "sensor", "iot", "rfc8428", "no-std"]
+categories = ["encoding", "parser-implementations", "no-std", "embedded"]
+
+[workspace.dependencies]
+rsenml-core = { version = "0.9.0", path = "crates/rsenml-core" }
+rsenml-json = { version = "0.9.0", path = "crates/rsenml-json" }
+rsenml-cbor = { version = "0.9.0", path = "crates/rsenml-cbor" }
+rsenml-xml = { version = "0.9.0", path = "crates/rsenml-xml" }
+rsenml-exi = { version = "0.9.0", path = "crates/rsenml-exi" }
+rsenml = { version = "0.9.0", path = "crates/rsenml", default-features = false }
+# rexi from GitHub at its release tag; Cargo.lock records the exact commit.
+rexi-core = { git = "https://github.com/nhenehan/rexi", tag = "v0.1.0", version = "0.1.0", default-features = false }
+nanojson = { version = "0.6", default-features = false }
+minicbor = { version = "2.3", default-features = false, features = ["alloc"] }
+xmlparser = { version = "0.13.6", default-features = false }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+todo = "deny"
+unimplemented = "deny"
+panic = "deny"
+
+[profile.release]
+lto = true
+codegen-units = 1

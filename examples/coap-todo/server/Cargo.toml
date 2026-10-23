@@ -1,0 +1,13 @@
+[package]
+name = "coap-todo-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+rsenml.workspace = true
+coap-lite.workspace = true
+
+[lints]
+workspace = true
