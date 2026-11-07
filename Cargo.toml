@@ -31,8 +31,8 @@ rsenml-cbor = { version = "0.9.0", path = "crates/rsenml-cbor" }
 rsenml-xml = { version = "0.9.0", path = "crates/rsenml-xml" }
 rsenml-exi = { version = "0.9.0", path = "crates/rsenml-exi" }
 rsenml = { version = "0.9.0", path = "crates/rsenml", default-features = false }
-# rexi from GitHub at a pinned commit (0.2.0, not tagged yet).
-rexi-core = { git = "https://github.com/nhenehan/rexi", rev = "db7bb96f99fbf48b2b69235c214c42053cda99cb", version = "0.2.0", default-features = false }
+# rexi from GitHub at its release tag; Cargo.lock records the exact commit.
+rexi-core = { git = "https://github.com/nhenehan/rexi", tag = "v0.2.0", version = "0.2.0", default-features = false }
 nanojson = { version = "0.6", default-features = false }
 minicbor = { version = "2.3", default-features = false, features = ["alloc"] }
 xmlparser = { version = "0.13.6", default-features = false }
