@@ -62,14 +62,14 @@ rsenml is not on crates.io yet. Use it from GitHub:
 
 ```toml
 [dependencies]
-rsenml = { git = "https://github.com/nhenehan/rsenml", tag = "v0.9.0" }
+rsenml = { git = "https://github.com/nhenehan/rsenml", tag = "v0.9.1" }
 ```
 
 Each format is a feature: `json`, `cbor`, `xml` and `exi`, all on by default. To
 keep only some, turn off the defaults:
 
 ```toml
-rsenml = { git = "https://github.com/nhenehan/rsenml", tag = "v0.9.0", default-features = false, features = ["cbor"] }
+rsenml = { git = "https://github.com/nhenehan/rsenml", tag = "v0.9.1", default-features = false, features = ["cbor"] }
 ```
 
 rsenml needs Rust 1.88 or newer.

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.1
+
+- **EXI** uses rexi 0.2.0, by its `v0.2.0` tag. The grammar tables now carry
+  schemaId `"a"`, so rexi itself refuses a stream that names another schema; it
+  is still reported as `Error::SchemaId`. No rsenml API changes.
+- **Comparison**: `doc/comparison.md` opens with a features table (what each
+  library's API offers, and RFC 8428 features as measured by the test vectors)
+  and ends with the timing table.
+- **Third parties**: a `third-party.lock` line can name a tag; rexi is pinned by
+  `v0.2.0`.
+
 ## 0.9.0
 
 The first public release. RFC 8428 SenML and SenSML in JSON, CBOR, XML and EXI.
