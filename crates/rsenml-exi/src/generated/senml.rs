@@ -934,5 +934,5 @@ pub static GRAMMARS: GrammarSet<'static> = GrammarSet {
     types: GRAMMARS_TYPES,
     enum_sets: GRAMMARS_ENUM_SETS,
     enum_values: GRAMMARS_ENUM_VALUES,
-    schema_id: None,
+    schema_id: Some("a"),
 };

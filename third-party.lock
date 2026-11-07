@@ -10,5 +10,5 @@
 #       rsenml-exi.
 # exip: only utils/xsd2exip, the EXIficient 1.0.7 oracle of scripts/gen-exi-fixtures.sh.
 
-rexi https://github.com/nhenehan/rexi.git ba2c7313e03e1aa4bb881b4e9d0910121519de85
+rexi https://github.com/nhenehan/rexi.git db7bb96f99fbf48b2b69235c214c42053cda99cb
 exip https://github.com/nhenehan/exip.git b2870c106f0cc88fd199208f724ce575df150444 utils/xsd2exip

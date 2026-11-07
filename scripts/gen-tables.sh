@@ -20,4 +20,4 @@ REXI="$("$ROOT/scripts/fetch-third-party.sh" --print-dir)/rexi"
 mkdir -p "$(dirname "$OUT")"
 cargo run -q --manifest-path "$REXI/Cargo.toml" -p rexi-schema-gen \
     --target-dir "$ROOT/target/rexi" -- \
-    "$ROOT/spec/senml.xsd" --out "$OUT" --name GRAMMARS "${CHECK[@]}"
+    "$ROOT/spec/senml.xsd" --out "$OUT" --name GRAMMARS --schema-id a "${CHECK[@]}"

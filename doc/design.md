@@ -40,8 +40,10 @@ first choices did not survive contact with the source:
   (the RFC's own example uses one) are converted in `rsenml_core::codec::number`, which
   saves the `half` crate.
 - **EXI: rexi**, through rexi's `no_std` support, as a git dependency on
-  [github.com/nhenehan/rexi](https://github.com/nhenehan/rexi) at its release tag.
-  `Cargo.lock` records the exact commit.
+  [github.com/nhenehan/rexi](https://github.com/nhenehan/rexi) at a pinned commit
+  (rexi 0.2.0; move to the `v0.2.0` tag once it exists). The grammar tables are
+  generated with schemaId `"a"`, so rexi itself refuses a stream that names
+  another schema.
 
 ## Data model
 

@@ -95,6 +95,13 @@ fn exi_error(e: rexi_core::ExiError, bit: u64) -> rsenml_core::Error {
             format: Format::Exi,
         },
         rexi_core::ExiError::Io(rexi_core::IoErrorKind::BufferFull) => Error::BufferFull,
+        // rexi checks the header's schemaId against the tables' id ("a").
+        rexi_core::ExiError::SchemaIdMismatch { stream, .. } => Error::SchemaId {
+            found: match *stream {
+                rexi_core::SchemaId::Id(id) => Some(id),
+                _ => None,
+            },
+        },
         e @ (rexi_core::ExiError::Header(_) | rexi_core::ExiError::Grammar { .. }) => {
             Error::Syntax {
                 format: Format::Exi,

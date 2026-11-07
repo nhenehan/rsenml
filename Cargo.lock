@@ -16,8 +16,8 @@ checksum = "20c42a3bf42df2a8882449b5f00aefaf9cb9be633a37a7b5dac824c1281931d6"
 
 [[package]]
 name = "rexi-core"
-version = "0.1.0"
-source = "git+https://github.com/nhenehan/rexi?tag=v0.1.0#ba2c7313e03e1aa4bb881b4e9d0910121519de85"
+version = "0.2.0"
+source = "git+https://github.com/nhenehan/rexi?rev=db7bb96f99fbf48b2b69235c214c42053cda99cb#db7bb96f99fbf48b2b69235c214c42053cda99cb"
 
 [[package]]
 name = "rsenml"

@@ -219,7 +219,7 @@ Minimal `#![no_std]` `#![no_main]` binaries under `compare/footprint/`, built wi
 | baseline | 808 | 8 | 0 | 32772 | 0 | runtime + bump allocator, one allocation, no codec |
 | rsenml `cbor` | 28856 | 2040 | 0 | 32772 | 28048 | decode + validate + encode the RFC section 6 dump; bump allocator |
 | rsenml `json` | 39604 | 3959 | 0 | 32772 | 38796 | decode + validate + encode the 2nd example of 5.1.2; bump allocator |
-| rsenml `exi` | 98492 | 28688 | 0 | 32772 | 97684 | decode + validate + encode the RFC section 8 bit-packed dump; bump allocator |
+| rsenml `exi` | 99484 | 28792 | 0 | 32772 | 98676 | decode + validate + encode the RFC section 8 bit-packed dump; bump allocator |
 | senml-cbor | 5668 | 539 | 0 | 0 | 4860 | decode + encode the RFC section 6 dump; no allocator (fixed arrays) |
 
 sindit-senml and coapum-senml need `std` and are not measured here. The four binaries do not process the same pack in every case (EXI uses the section 8 dump of the first 5.1.2 example; the others the second 5.1.2 example), which does not change which code is linked.
@@ -230,16 +230,16 @@ Median time per call. Each decoder reads its own library's encoding of the data 
 
 | library / format | RFC 5.1.3 decode | RFC 5.1.3 encode | synthetic 200 decode | synthetic 200 encode | decode includes |
 |---|---|---|---|---|---|
-| rsenml JSON | 4.1 µs | 2.3 µs | 60.0 µs | 35.7 µs | decode validates |
-| rsenml JSON + resolve | 3.8 µs | - | 68.6 µs | - | decode, validate and resolve (what sindit-senml's parse_json does) |
-| rsenml CBOR | 1.9 µs | 972 ns | 32.9 µs | 16.6 µs | decode validates |
-| rsenml XML | 3.5 µs | 2.0 µs | 72.0 µs | 44.4 µs | decode validates |
-| rsenml EXI bit-packed | 5.8 µs | 4.6 µs | 94.6 µs | 43.9 µs | decode validates |
-| rsenml EXI byte-aligned | 6.1 µs | 3.9 µs | 96.8 µs | 46.0 µs | decode validates |
-| sindit-senml JSON | 4.4 µs | 994 ns | 63.6 µs | 12.3 µs | parse_json: decode, validate, resolve |
-| coapum-senml JSON | 1.4 µs | 873 ns | 31.4 µs | 17.3 µs | from_json_bytes + validate() |
-| coapum-senml CBOR | 2.8 µs | 621 ns | 76.2 µs | 12.1 µs | from_cbor_validated |
-| senml-cbor CBOR | 180 ns | 108 ns | 4.7 µs | 2.3 µs | no validation; caller-supplied record array and output buffer |
+| rsenml JSON | 2.8 µs | 2.1 µs | 55.1 µs | 36.3 µs | decode validates |
+| rsenml JSON + resolve | 3.8 µs | - | 76.9 µs | - | decode, validate and resolve (what sindit-senml's parse_json does) |
+| rsenml CBOR | 1.8 µs | 964 ns | 31.1 µs | 17.4 µs | decode validates |
+| rsenml XML | 3.8 µs | 2.1 µs | 70.4 µs | 47.1 µs | decode validates |
+| rsenml EXI bit-packed | 5.6 µs | 3.7 µs | 89.4 µs | 48.4 µs | decode validates |
+| rsenml EXI byte-aligned | 5.8 µs | 3.9 µs | 87.2 µs | 40.4 µs | decode validates |
+| sindit-senml JSON | 3.9 µs | 983 ns | 49.8 µs | 12.0 µs | parse_json: decode, validate, resolve |
+| coapum-senml JSON | 1.5 µs | 982 ns | 35.6 µs | 18.8 µs | from_json_bytes + validate() |
+| coapum-senml CBOR | 3.1 µs | 633 ns | 76.8 µs | 12.3 µs | from_cbor_validated |
+| senml-cbor CBOR | 159 ns | 96 ns | 4.9 µs | 2.3 µs | no validation; caller-supplied record array and output buffer |
 
 ## Not measured
 
