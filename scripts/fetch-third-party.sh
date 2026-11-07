@@ -3,7 +3,7 @@
 # oracle) into a cache outside the working tree. The build itself does not need them:
 # Cargo gets rexi from GitHub.
 #
-#   scripts/fetch-third-party.sh                 check out every pinned commit
+#   scripts/fetch-third-party.sh                 check out every pin (a commit or a tag)
 #   scripts/fetch-third-party.sh --check         exit 1 unless every checkout is present,
 #                                                clean and at its pin
 #   scripts/fetch-third-party.sh --update NAME   re-pin NAME to its remote HEAD
@@ -33,7 +33,7 @@ done
 command -v git >/dev/null || { echo "missing required command: git" >&2; exit 1; }
 [[ -f "$LOCK" ]] || { echo "missing $LOCK" >&2; exit 1; }
 
-# Lock entries as "name url sha [sparse]" lines.
+# Lock entries as "name url sha [sparse]" lines; sha is a 40-character commit or a tag.
 entries() { awk '!/^[[:space:]]*(#|$)/ { print $1, $2, $3, $4 }' "$LOCK"; }
 
 # A path relative to this repository becomes an absolute local path.
@@ -46,6 +46,19 @@ resolve_url() {
 }
 
 dirty() { [[ -n "$(git -C "$1" status --porcelain --untracked-files=no)" ]]; }
+
+# A pin is a 40-character commit or a tag name.
+is_commit() { [[ "$1" =~ ^[0-9a-f]{40}$ ]]; }
+
+# The commit a pin names in the checkout at $1: the pin itself, or the commit of
+# the tag as fetched (empty if that tag is not there yet).
+pin_commit() { # path pin
+    if is_commit "$2"; then
+        echo "$2"
+    else
+        git -C "$1" rev-parse -q --verify "refs/tags/$2^{commit}" || true
+    fi
+}
 
 checkout() { # name url sha [sparse]
     local name="$1" url sha="$3" sparse="${4:-}" path="$DIR/$1"
@@ -65,16 +78,23 @@ checkout() { # name url sha [sparse]
         echo "$name: $path has local changes; refusing to touch it" >&2
         return 1
     fi
-    if [[ "$(git -C "$path" rev-parse -q --verify HEAD || true)" != "$sha" ]]; then
+    local want
+    want="$(pin_commit "$path" "$sha")"
+    if [[ -z "$want" || "$(git -C "$path" rev-parse -q --verify HEAD || true)" != "$want" ]]; then
         echo "$name: fetching $sha"
         local filter=()
         [[ -n "$sparse" ]] && filter=(--filter=blob:none)
-        # Fetching a bare commit needs uploadpack.allowReachableSHA1InWant (GitHub
-        # allows it); a local repository may not, so fall back to fetching its refs.
-        if ! git -C "$path" fetch -q --depth 1 "${filter[@]}" origin "$sha" 2>/dev/null; then
-            git -C "$path" fetch -q "${filter[@]}" origin '+refs/heads/*:refs/remotes/origin/*'
+        if ! is_commit "$sha"; then
+            git -C "$path" fetch -q --depth 1 "${filter[@]}" origin "+refs/tags/$sha:refs/tags/$sha"
+            git -C "$path" checkout -q --detach "refs/tags/$sha^{commit}"
+        else
+            # Fetching a bare commit needs uploadpack.allowReachableSHA1InWant (GitHub
+            # allows it); a local repository may not, so fall back to fetching its refs.
+            if ! git -C "$path" fetch -q --depth 1 "${filter[@]}" origin "$sha" 2>/dev/null; then
+                git -C "$path" fetch -q "${filter[@]}" origin '+refs/heads/*:refs/remotes/origin/*'
+            fi
+            git -C "$path" checkout -q --detach "$sha"
         fi
-        git -C "$path" checkout -q --detach "$sha"
     fi
     echo "$name: at $sha"
 }
@@ -85,9 +105,10 @@ check() { # name url sha
         echo "MISSING  $name ($path)" >&2
         return 1
     fi
-    local head
+    local head want
     head="$(git -C "$path" rev-parse -q --verify HEAD || true)"
-    if [[ "$head" != "$sha" ]]; then
+    want="$(pin_commit "$path" "$sha")"
+    if [[ -z "$want" || "$head" != "$want" ]]; then
         echo "MOVED    $name: at ${head:-nothing}, pinned $sha" >&2
         return 1
     fi
@@ -95,7 +116,11 @@ check() { # name url sha
         echo "DIRTY    $name" >&2
         return 1
     fi
-    echo "ok       $name $sha"
+    if is_commit "$sha"; then
+        echo "ok       $name $sha"
+    else
+        echo "ok       $name $sha (${head:0:12})"
+    fi
 }
 
 status=0

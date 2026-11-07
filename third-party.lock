@@ -1,14 +1,14 @@
 # Dependencies pinned outside crates.io, fetched by scripts/fetch-third-party.sh into
 # ${RSENML_THIRD_PARTY:-${XDG_CACHE_HOME:-~/.cache}/rsenml/third_party} (never into this
-# working tree) and linked as third_party/<name> (gitignored), which Cargo.toml path
-# dependencies point at. Pins move only through --update NAME.
+# working tree). A pin moves through --update NAME (a commit) or by writing a release
+# tag by hand.
 #
-# Each line: <name> <git url or path relative to this repo> <40-char commit> [sparse path]
+# Each line: <name> <git url or path relative to this repo> <40-char commit or tag> [sparse path]
 # A sparse path checks out only that directory (blobs fetched on demand).
 #
-# rexi: the Rust EXI implementation (rexi-core, rexi-serde, rexi-schema-gen) behind
-#       rsenml-exi.
+# rexi: the Rust EXI implementation; its rexi-schema-gen writes rsenml-exi's tables
+#       (scripts/gen-tables.sh). Cargo gets rexi-core from GitHub at the same tag.
 # exip: only utils/xsd2exip, the EXIficient 1.0.7 oracle of scripts/gen-exi-fixtures.sh.
 
-rexi https://github.com/nhenehan/rexi.git db7bb96f99fbf48b2b69235c214c42053cda99cb
+rexi https://github.com/nhenehan/rexi.git v0.2.0
 exip https://github.com/nhenehan/exip.git b2870c106f0cc88fd199208f724ce575df150444 utils/xsd2exip
