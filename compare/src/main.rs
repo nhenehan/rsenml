@@ -4,6 +4,7 @@
 
 mod conformance;
 mod env;
+mod features;
 mod interop;
 mod libs;
 mod model;
@@ -173,8 +174,11 @@ fn main() {
         machine.arch, machine.cpu, machine.rustc, machine.cargo
     );
 
-    // ------------------------------------------------------------ 1. conformance
-    let _ = writeln!(w, "## 1. Conformance\n");
+    md.push_str(&features::section(&rows, &deps));
+    let w = &mut md;
+
+    // ------------------------------------------------------------ 2. conformance
+    let _ = writeln!(w, "## 2. Conformance by vector\n");
     let _ = writeln!(
         w,
         "| Library | Representation | pass | fail | panic | fail (normative vectors only) |\n|---|---|---|---|---|---|"
@@ -253,7 +257,7 @@ fn main() {
     }
 
     // ------------------------------------------------------------ 2. interop
-    let _ = writeln!(w, "## 2. Interoperability\n");
+    let _ = writeln!(w, "## 3. Interoperability\n");
     let _ = writeln!(
         w,
         "Each of the {} JSON examples of section 5.1 is read by the encoding library (with its \
@@ -326,7 +330,7 @@ fn main() {
     }
 
     // ------------------------------------------------------------ 3. sizes
-    let _ = writeln!(w, "## 3. Encoded sizes\n");
+    let _ = writeln!(w, "## 4. Encoded sizes\n");
     let _ = writeln!(
         w,
         "Each library encodes the data from its own reading of the JSON. *Faithful* means its \
@@ -369,44 +373,6 @@ fn main() {
         if rsenml_rfc6_again == rfc6 { "byte-identical".to_owned() } else { format!("**different** ({} bytes)", rsenml_rfc6_again.len()) },
         rsenml_512b_cbor.len(),
     );
-
-    // ------------------------------------------------------------ 4. speed
-    let _ = writeln!(w, "## 4. Speed\n");
-    let _ = writeln!(
-        w,
-        "Median time per call. Each decoder reads its own library's encoding of the data (the \
-         outputs of section 3; for coapum-senml these carry less data where section 3 says \
-         *not faithful*); each encoder writes from its own in-memory model. What a decode \
-         includes differs by library (validation, resolution, allocation); see the note \
-         column.\n"
-    );
-    let _ = writeln!(
-        w,
-        "| library / format | {0} decode | {0} encode | {1} decode | {1} encode | decode includes |\n|---|---|---|---|---|---|",
-        sets[0].name, sets[1].name
-    );
-    let mut seen: Vec<&str> = Vec::new();
-    for r in &speeds {
-        if seen.contains(&r.codec) {
-            continue;
-        }
-        seen.push(r.codec);
-        let per: Vec<&perf::SpeedRow> = speeds.iter().filter(|x| x.codec == r.codec).collect();
-        let get = |set: &str| per.iter().find(|x| x.dataset == set);
-        let a = get(sets[0].name);
-        let b = get(sets[1].name);
-        let _ = writeln!(
-            w,
-            "| {} | {} | {} | {} | {} | {} |",
-            r.codec,
-            ns(a.and_then(|x| x.decode_ns)),
-            ns(a.and_then(|x| x.encode_ns)),
-            ns(b.and_then(|x| x.decode_ns)),
-            ns(b.and_then(|x| x.encode_ns)),
-            r.note
-        );
-    }
-    let _ = writeln!(w);
 
     // ------------------------------------------------------------ 5. deps
     let _ = writeln!(w, "## 5. Dependencies\n");
@@ -488,6 +454,44 @@ fn main() {
          the first 5.1.2 example; the others the second 5.1.2 example), which does not change \
          which code is linked.\n"
     );
+
+    // ------------------------------------------------------------ 7. timing
+    let _ = writeln!(w, "## 7. Timing\n");
+    let _ = writeln!(
+        w,
+        "Median time per call. Each decoder reads its own library's encoding of the data (the \
+         outputs of section 4; for coapum-senml these carry less data where section 4 says \
+         *not faithful*); each encoder writes from its own in-memory model. What a decode \
+         includes differs by library (validation, resolution, allocation); see the note \
+         column.\n"
+    );
+    let _ = writeln!(
+        w,
+        "| library / format | {0} decode | {0} encode | {1} decode | {1} encode | decode includes |\n|---|---|---|---|---|---|",
+        sets[0].name, sets[1].name
+    );
+    let mut seen: Vec<&str> = Vec::new();
+    for r in &speeds {
+        if seen.contains(&r.codec) {
+            continue;
+        }
+        seen.push(r.codec);
+        let per: Vec<&perf::SpeedRow> = speeds.iter().filter(|x| x.codec == r.codec).collect();
+        let get = |set: &str| per.iter().find(|x| x.dataset == set);
+        let a = get(sets[0].name);
+        let b = get(sets[1].name);
+        let _ = writeln!(
+            w,
+            "| {} | {} | {} | {} | {} | {} |",
+            r.codec,
+            ns(a.and_then(|x| x.decode_ns)),
+            ns(a.and_then(|x| x.encode_ns)),
+            ns(b.and_then(|x| x.decode_ns)),
+            ns(b.and_then(|x| x.encode_ns)),
+            r.note
+        );
+    }
+    let _ = writeln!(w);
 
     // ------------------------------------------------------------ not measured
     let _ = writeln!(w, "## Not measured\n");
