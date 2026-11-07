@@ -441,6 +441,7 @@ dependencies = [
  "chrono",
  "coapum-senml",
  "rsenml",
+ "rsenml-tests",
  "senml-cbor",
  "serde_json",
  "sindit-senml",
@@ -464,6 +465,13 @@ version = "0.9.1"
 dependencies = [
  "nanojson",
  "rsenml-core",
+]
+
+[[package]]
+name = "rsenml-tests"
+version = "0.9.1"
+dependencies = [
+ "rsenml",
 ]
 
 [[package]]

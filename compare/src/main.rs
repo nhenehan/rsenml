@@ -4,6 +4,7 @@
 
 mod conformance;
 mod env;
+mod export;
 mod features;
 mod interop;
 mod libs;
@@ -53,6 +54,18 @@ fn outcome_cell(o: &Outcome) -> String {
 fn main() {
     // Panics inside libraries are caught and reported; keep stderr quiet.
     std::panic::set_hook(Box::new(|_| {}));
+
+    // `export <dir>`: only write the vectors and cases as TSV (export.rs).
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    if let [mode, dir] = args.as_slice()
+        && mode == "export"
+    {
+        if let Err(e) = export::run(std::path::Path::new(dir)) {
+            eprintln!("export: {e}");
+            std::process::exit(1);
+        }
+        return;
+    }
 
     let machine = env::machine();
     let examples = rfc::json_examples();

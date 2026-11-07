@@ -2,8 +2,8 @@
 # Everything a commit must pass:
 #   pins, formatting, clippy (no warnings), rustdoc, tests (also on the oldest
 #   supported Rust, rust-version in Cargo.toml), no_std builds of every
-#   representation for Cortex-M4F, generated EXI tables and EXIficient fixtures
-#   up to date.
+#   representation for Cortex-M4F, generated EXI tables, exported vectors and
+#   EXIficient fixtures up to date.
 #
 #   scripts/gate.sh           full gate
 #   scripts/gate.sh --quick   skip the EXIficient check (needs Java)
@@ -51,6 +51,9 @@ done
 
 step "generated EXI tables"
 scripts/gen-tables.sh --check
+
+step "exported vectors and cases (SenML.jl)"
+scripts/export-fixtures.sh --check
 
 if [[ $QUICK -eq 0 ]]; then
     step "EXIficient reference bytes"

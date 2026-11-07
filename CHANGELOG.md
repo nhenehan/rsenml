@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- **Exported test data**: `scripts/export-fixtures.sh` writes the conformance
+  vectors and the test cases, with rsenml's verdicts and bytes in every format,
+  as TSV in `crates/rsenml-tests/fixtures/export` (for SenML.jl). The gate
+  checks that they are up to date.
+
 ## 0.9.1
 
 - **EXI** uses rexi 0.2.0, by its `v0.2.0` tag. The grammar tables now carry

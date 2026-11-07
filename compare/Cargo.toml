@@ -32,6 +32,8 @@ description = "Compares rsenml with sindit-senml, senml-cbor and coapum-senml; w
 
 [dependencies]
 rsenml = { path = "../crates/rsenml" }
+# The test cases of rsenml-tests, for `export`.
+rsenml-tests = { path = "../crates/rsenml-tests" }
 sindit-senml = "0.3"
 senml-cbor = "0.1"
 # default features: json + cbor
