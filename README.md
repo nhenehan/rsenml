@@ -104,8 +104,8 @@ Where the RFC is unclear, the choices rsenml made are in
 
 ## License
 
-BSD-3-Clause, see [LICENSE](LICENSE). The RFC texts in `spec/` and the
-downloaded third parties keep their own licenses.
+BSD-3-Clause, see [LICENSE](LICENSE). The downloaded standards and third
+parties keep their own licenses.
 
 ## For maintainers
 
@@ -149,6 +149,7 @@ outside the tree:
 
 ```bash
 scripts/fetch-third-party.sh          # check out the pinned rexi (schema generator) and exip oracle
+scripts/fetch-standards.sh            # download RFC 8428 (the tests read its examples)
 scripts/gate.sh                       # fmt, clippy, tests, no_std builds, generated files
 scripts/gate.sh --quick               # the same without the EXIficient check (no Java)
 ```
@@ -156,13 +157,15 @@ scripts/gate.sh --quick               # the same without the EXIficient check (n
 | Script | Purpose |
 |---|---|
 | `scripts/fetch-third-party.sh [--check \| --update NAME]` | pinned tools (rexi's schema generator, exip's oracle) in `~/.cache/rsenml/third_party` |
-| `scripts/gen-tables.sh [--check]` | EXI grammar tables of `spec/senml.xsd` (rexi-schema-gen) |
+| `scripts/fetch-standards.sh [--check]` | [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428) from rfc-editor.org, and its section 8 XSD taken out of it, checked by sha256 (`standards.lock`), in `~/.cache/rsenml/standards` |
+| `scripts/gen-tables.sh [--check]` | EXI grammar tables of the [section 8 XSD](https://www.rfc-editor.org/rfc/rfc8428#section-8) (rexi-schema-gen) |
 | `scripts/gen-exi-fixtures.sh [--check]` | EXIficient 1.0.7 reference bytes for every test case (exip's `utils/xsd2exip` oracle; Java, Maven) |
 | `scripts/gate.sh [--quick]` | everything a commit must pass |
 | `fuzz/run.sh [seconds]` | every fuzz target for a fixed time, 60 s each by default (nightly Rust, `cargo install cargo-fuzz`) |
 
-`spec/` holds the RFC text and its section 8 XSD. The tests read their vectors
-from the RFC text itself.
+Standards are linked, not committed. The tests read their vectors from the RFC
+text itself, which `scripts/fetch-standards.sh` downloads from rfc-editor.org and
+checks against `standards.lock`.
 
 `examples/`, `compare/` and `fuzz/` are separate workspaces. They are built only
 on request, never by the workspace or the gate.

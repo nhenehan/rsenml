@@ -1,6 +1,7 @@
-//! RFC 8428 test vectors extracted from `spec/rfc8428.txt`, so each vector is
-//! traceable to the RFC text. Copied from `crates/rsenml-tests/src/lib.rs`
-//! (`rfc_text`, `section`, `json_examples`, `hex_dumps`).
+//! [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428) test vectors extracted from
+//! the RFC text (fetched by `scripts/fetch-standards.sh`), so each vector is
+//! traceable to the RFC. Copied from `crates/rsenml-tests/src/lib.rs`
+//! (`standards_dir`, `rfc_text`, `section`, `json_examples`, `hex_dumps`).
 
 use std::path::{Path, PathBuf};
 
@@ -11,9 +12,26 @@ pub fn root() -> PathBuf {
         .map_or_else(|| PathBuf::from(".."), Path::to_path_buf)
 }
 
+/// The cache that `scripts/fetch-standards.sh` fills: `$RSENML_STANDARDS`, else
+/// `${XDG_CACHE_HOME:-~/.cache}/rsenml/standards`.
+pub fn standards_dir() -> PathBuf {
+    let var = |name| {
+        std::env::var_os(name)
+            .filter(|v| !v.is_empty())
+            .map(PathBuf::from)
+    };
+    if let Some(dir) = var("RSENML_STANDARDS") {
+        return dir;
+    }
+    var("XDG_CACHE_HOME")
+        .or_else(|| var("HOME").map(|h| h.join(".cache")))
+        .unwrap_or_else(|| PathBuf::from(".cache"))
+        .join("rsenml/standards")
+}
+
 /// The RFC text, with page breaks (footer, form feed, header) removed.
 pub fn rfc_text() -> String {
-    let raw = std::fs::read_to_string(root().join("spec/rfc8428.txt")).unwrap_or_default();
+    let raw = std::fs::read_to_string(standards_dir().join("rfc8428.txt")).unwrap_or_default();
     let mut out = String::new();
     for line in raw.lines() {
         let t = line.trim_start();

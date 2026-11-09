@@ -85,7 +85,7 @@ The clients send and ask for 114, `application/senml-exi`.
 
 **EXI settings.** These follow RFC 8428
 [section 8](https://www.rfc-editor.org/rfc/rfc8428#section-8): schema-informed by
-the RFC's XSD (`../../spec/senml.xsd`), strict, bit-packed, the EXI options in the
+the RFC's XSD (in the same section), strict, bit-packed, the EXI options in the
 header with schemaId `"a"`, and no `$EXI` cookie. Each client sets these in its own
 library's terms. For the same pack, all four write the same bytes (you can check
 with `--verbose`). For example, `add "Same title"` gives the same 41-byte stream

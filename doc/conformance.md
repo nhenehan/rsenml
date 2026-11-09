@@ -27,7 +27,7 @@ violations in the first place).
 | 17 | CBOR numbers convert back to the same double; `bver` unsigned only | 6 | `write_number`, `numeric` | `cbor.rs` `numbers_take_the_smallest_exact_form`, `every_numeric_form_is_read`, `record_rules` |
 | 18 | CBOR: definite-length strings; definite array for SenML, indefinite for SenSML | 6 | `rsenml-cbor` | `cbor.rs` `sensml_uses_an_indefinite_array`, `record_rules` |
 | 19 | XML: UTF-8, namespace `urn:ietf:params:xml:ns:senml`, `sensml`/`senml` elements, Table 5 attributes | 7 | `rsenml-xml` | `xml.rs` `rfc8428_section_7`, `namespaces_prefixes_and_foreign_attributes`, `structure_is_enforced` |
-| 20 | EXI: strict schema mode with the RFC's XSD | 8 | `rsenml-exi`, `spec/senml.xsd`, `scripts/gen-tables.sh` | `rsenml-tests/tests/extract.rs` (XSD equals the RFC's) |
+| 20 | EXI: strict schema mode with the RFC's XSD | 8 | `rsenml-exi`, the [section 8 XSD](https://www.rfc-editor.org/rfc/rfc8428#section-8), `scripts/gen-tables.sh` | `rsenml-tests/tests/extract.rs` (XSD equals the RFC's) |
 | 21 | EXI header includes options with schemaId "a"; no cookie by default | 8 | `rsenml-exi` | `exi.rs` `schema_id_is_checked`, `cookie_and_fixed_buffer` |
 | 22 | EXI bit-packed and byte-aligned | 8 | `Alignment` | `exi.rs` `rfc8428_section_8_*_both_ways` |
 | 23 | Units registry | 12.1 | `units` (Table 6), `ValidationOptions::registered_units` | `units.rs`, `validate.rs` `extensions_and_units` |
@@ -36,7 +36,9 @@ violations in the first place).
 
 ## The RFC's examples
 
-All extracted from `spec/rfc8428.txt` at test time (`rsenml-tests/src/lib.rs`):
+All extracted at test time (`rsenml-tests/src/lib.rs`) from the
+[RFC 8428](https://www.rfc-editor.org/rfc/rfc8428) text that
+`scripts/fetch-standards.sh` downloads:
 
 | Vector | Result |
 |---|---|

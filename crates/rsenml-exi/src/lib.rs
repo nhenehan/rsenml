@@ -4,7 +4,8 @@
 //! ([section 12.3](https://www.rfc-editor.org/rfc/rfc8428#section-12.3)).
 //!
 //! EXI (Efficient XML Interchange) is a binary form of XML. This crate uses
-//! *strict schema-informed* EXI of the RFC's XSD (`spec/senml.xsd`). That means the
+//! *strict schema-informed* EXI of the RFC's XSD
+//! ([section 8](https://www.rfc-editor.org/rfc/rfc8428#section-8)). That means the
 //! grammars (the state machines that say which events may come next, and the short
 //! *event codes* that pick one) are built from the schema
 //! ([EXI 8.5](https://www.w3.org/TR/exi/#informedGrammars)), and *strict* means

@@ -1,6 +1,7 @@
-//! Test vectors for rsenml: the examples of RFC 8428, taken from the RFC text in
-//! `spec/rfc8428.txt` (so every vector can be traced back to the RFC), and made-up
-//! packs that cover what the examples do not.
+//! Test vectors for rsenml: the examples of
+//! [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428), taken from the RFC text
+//! (fetched by `scripts/fetch-standards.sh`, so every vector can be traced back to
+//! the RFC), and made-up packs that cover what the examples do not.
 
 use std::path::{Path, PathBuf};
 
@@ -14,9 +15,39 @@ pub fn root() -> PathBuf {
         .map_or_else(|| PathBuf::from("."), Path::to_path_buf)
 }
 
+/// The cache that `scripts/fetch-standards.sh` fills with the standards of
+/// `standards.lock`: `$RSENML_STANDARDS`, else
+/// `${XDG_CACHE_HOME:-~/.cache}/rsenml/standards`. Standards are linked, not
+/// committed.
+pub fn standards_dir() -> PathBuf {
+    let var = |name| {
+        std::env::var_os(name)
+            .filter(|v| !v.is_empty())
+            .map(PathBuf::from)
+    };
+    if let Some(dir) = var("RSENML_STANDARDS") {
+        return dir;
+    }
+    var("XDG_CACHE_HOME")
+        .or_else(|| var("HOME").map(|h| h.join(".cache")))
+        .unwrap_or_else(|| PathBuf::from(".cache"))
+        .join("rsenml/standards")
+}
+
+/// One file of `standards.lock`, from the cache. When it is missing, this says how
+/// to fetch it (on stderr) and returns an empty string, so the tests that need it
+/// fail (`tests/extract.rs` first).
+pub fn standard(file: &str) -> String {
+    let path = standards_dir().join(file);
+    std::fs::read_to_string(&path).unwrap_or_else(|e| {
+        eprintln!("{}: {e}; run scripts/fetch-standards.sh", path.display());
+        String::new()
+    })
+}
+
 /// The RFC text, with page breaks (footer, form feed, header) removed.
 pub fn rfc_text() -> String {
-    let raw = std::fs::read_to_string(root().join("spec/rfc8428.txt")).unwrap_or_default();
+    let raw = standard("rfc8428.txt");
     let mut out = String::new();
     for line in raw.lines() {
         let t = line.trim_start();
@@ -174,7 +205,7 @@ pub fn hex_dumps(section_number: &str) -> Vec<Vec<u8>> {
 }
 
 /// The XSD of [section 8](https://www.rfc-editor.org/rfc/rfc8428#section-8), as
-/// published (also in `spec/senml.xsd`).
+/// published (`scripts/fetch-standards.sh` extracts the same text as `senml.xsd`).
 pub fn rfc_xsd() -> String {
     let body = section(&rfc_text(), "8");
     let mut out = String::new();

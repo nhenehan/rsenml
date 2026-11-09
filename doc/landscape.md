@@ -2,7 +2,7 @@
 
 Surveyed 2026-10-13 by reading source (crates.io `.crate` files and GitHub clones; nothing
 built or run). Download counts from the crates.io API on that date. RFC references are to
-RFC 8428 ([`../spec/rfc8428.txt`](../spec/rfc8428.txt)).
+[RFC 8428](https://www.rfc-editor.org/rfc/rfc8428).
 
 ## SenML crates
 

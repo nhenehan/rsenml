@@ -1,0 +1,13 @@
+# Standards the tests and generators read, fetched from their publishers by
+# scripts/fetch-standards.sh into
+# ${RSENML_STANDARDS:-${XDG_CACHE_HOME:-~/.cache}/rsenml/standards}. They are
+# linked, never committed.
+#
+# Each line: <file> <sha256> <source: a URL, or a part of an earlier file>
+#
+# rfc8428.txt: RFC 8428 (SenML). The tests take the RFC's examples from it.
+# senml.xsd:   the XML schema of its section 8, which the EXI tables and the
+#              EXIficient reference bytes are made from.
+
+rfc8428.txt 643195be834507be9e5a8e4c8c506b8c4523159fcdd09b822963971b34faffa9 https://www.rfc-editor.org/rfc/rfc8428.txt
+senml.xsd   22f451f428974ac2ae52cb08c9a02db78a16c4316167a29be9388e87025b348e rfc-xsd:rfc8428.txt#8

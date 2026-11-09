@@ -19,7 +19,7 @@ fn extraction_finds_every_rfc_vector() {
     assert_eq!(cbor.iter().map(Vec::len).collect::<Vec<_>>(), [0xc3]);
     let exi = rsenml_tests::hex_dumps("8");
     assert_eq!(exi.iter().map(Vec::len).collect::<Vec<_>>(), [0x3f, 0x31]);
-    let xsd =
-        std::fs::read_to_string(rsenml_tests::root().join("spec/senml.xsd")).unwrap_or_default();
-    assert_eq!(rsenml_tests::rfc_xsd(), xsd);
+    // The schema scripts/fetch-standards.sh extracts for the generators is the one
+    // this crate reads from the RFC.
+    assert_eq!(rsenml_tests::rfc_xsd(), rsenml_tests::standard("senml.xsd"));
 }

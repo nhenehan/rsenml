@@ -13,7 +13,7 @@ throughout, measured against the RFC's own examples and against EXIficient.
 | `rsenml-xml` | XML (section 7) | xmlparser 0.13 |
 | `rsenml-exi` | EXI (section 8) | rexi-core (pinned, `third-party.lock`) |
 | `rsenml` | Facade: re-exports, one feature per representation, `decode`/`encode` by media type | the above |
-| `rsenml-tests` | RFC vectors extracted from `spec/rfc8428.txt`, round trips, EXIficient bytes, robustness | (dev only) |
+| `rsenml-tests` | RFC vectors extracted from the [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428) text (`scripts/fetch-standards.sh`), round trips, EXIficient bytes, robustness | (dev only) |
 
 Every library crate is `#![no_std]` with `extern crate alloc`, forbids `unsafe`, and
 builds for `thumbv7em-none-eabihf` alone or together (`scripts/gate.sh`).

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Regenerate the EXI grammar tables of the RFC 8428 schema (spec/senml.xsd) with
+# Regenerate the EXI grammar tables of the RFC 8428 schema (section 8,
+# https://www.rfc-editor.org/rfc/rfc8428#section-8; scripts/fetch-standards.sh
+# extracts it as senml.xsd) with
 # rexi-schema-gen from the pinned rexi (in the cache of fetch-third-party.sh).
 #
 #   scripts/gen-tables.sh           write crates/rsenml-exi/src/generated/senml.rs
@@ -7,6 +9,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+"$ROOT/scripts/fetch-standards.sh" --check >/dev/null
+XSD="$("$ROOT/scripts/fetch-standards.sh" --print-dir)/senml.xsd"
 OUT="$ROOT/crates/rsenml-exi/src/generated/senml.rs"
 CHECK=()
 case "${1:-}" in
@@ -20,4 +24,4 @@ REXI="$("$ROOT/scripts/fetch-third-party.sh" --print-dir)/rexi"
 mkdir -p "$(dirname "$OUT")"
 cargo run -q --manifest-path "$REXI/Cargo.toml" -p rexi-schema-gen \
     --target-dir "$ROOT/target/rexi" -- \
-    "$ROOT/spec/senml.xsd" --out "$OUT" --name GRAMMARS --schema-id a "${CHECK[@]}"
+    "$XSD" --out "$OUT" --name GRAMMARS --schema-id a "${CHECK[@]}"

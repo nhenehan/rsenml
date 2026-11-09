@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Standards are linked, not committed**: `spec/` is gone (RFC 8428, 8798,
+  9100, 9193 and the section 8 XSD). `scripts/fetch-standards.sh` downloads RFC
+  8428 from rfc-editor.org into `~/.cache/rsenml/standards` and takes the XSD out
+  of its section 8, both checked by sha256 against `standards.lock`. The tests,
+  `gen-tables.sh`, `gen-exi-fixtures.sh` and the coap-todo example read them
+  there; the gate checks them. Docs link to rfc-editor.org.
 - **Exported test data**: `scripts/export-fixtures.sh` writes the conformance
   vectors and the test cases, with rsenml's verdicts and bytes in every format,
   as TSV in `crates/rsenml-tests/fixtures/export` (for SenML.jl). The gate
