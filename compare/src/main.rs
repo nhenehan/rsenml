@@ -395,7 +395,7 @@ fn main() {
          target, the library itself included: `cargo tree -e normal -p <probe> --prefix none` \
          on a probe crate under `compare/probes/` that depends on that library alone, so \
          features are not unified with the other libraries. *Local* counts path packages \
-         (rsenml's own crates and rexi). `no_std` is read from the crate's `src/lib.rs`.\n"
+         (rsenml's own crates). `no_std` is read from the crate's `src/lib.rs`.\n"
     );
     let _ = writeln!(
         w,

@@ -79,12 +79,13 @@ dependencies = [
 
 [[package]]
 name = "rexi-core"
-version = "0.2.0"
-source = "git+https://github.com/nhenehan/rexi?tag=v0.2.0#db7bb96f99fbf48b2b69235c214c42053cda99cb"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "efbaef23af3794209e77a2491682006dd02958f6f955be1e945fee948b735b9b"
 
 [[package]]
 name = "rsenml"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "rsenml-cbor",
  "rsenml-core",
@@ -95,7 +96,7 @@ dependencies = [
 
 [[package]]
 name = "rsenml-cbor"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "minicbor",
  "rsenml-core",
@@ -103,11 +104,11 @@ dependencies = [
 
 [[package]]
 name = "rsenml-core"
-version = "0.9.1"
+version = "0.9.2"
 
 [[package]]
 name = "rsenml-exi"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "rexi-core",
  "rsenml-core",
@@ -115,7 +116,7 @@ dependencies = [
 
 [[package]]
 name = "rsenml-json"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "nanojson",
  "rsenml-core",
@@ -123,7 +124,7 @@ dependencies = [
 
 [[package]]
 name = "rsenml-xml"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
  "rsenml-core",
  "xmlparser",

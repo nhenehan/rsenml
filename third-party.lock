@@ -7,8 +7,8 @@
 # A sparse path checks out only that directory (blobs fetched on demand).
 #
 # rexi: the Rust EXI implementation; its rexi-schema-gen writes rsenml-exi's tables
-#       (scripts/gen-tables.sh). Cargo gets rexi-core from GitHub at the same tag.
+#       (scripts/gen-tables.sh). Cargo gets rexi-core from crates.io at the same version.
 # exip: only utils/xsd2exip, the EXIficient 1.0.7 oracle of scripts/gen-exi-fixtures.sh.
 
-rexi https://github.com/nhenehan/rexi.git v0.2.0
+rexi https://github.com/nhenehan/rexi.git v0.3.0
 exip https://github.com/nhenehan/exip.git b2870c106f0cc88fd199208f724ce575df150444 utils/xsd2exip

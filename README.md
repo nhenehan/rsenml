@@ -58,18 +58,16 @@ urn:dev:ow:10e2073a01080063:open = Some(Bool(false))
 
 ## Add to your project
 
-rsenml is not on crates.io yet. Use it from GitHub:
-
 ```toml
 [dependencies]
-rsenml = { git = "https://github.com/nhenehan/rsenml", tag = "v0.9.2" }
+rsenml = "0.9"
 ```
 
 Each format is a feature: `json`, `cbor`, `xml` and `exi`, all on by default. To
 keep only some, turn off the defaults:
 
 ```toml
-rsenml = { git = "https://github.com/nhenehan/rsenml", tag = "v0.9.2", default-features = false, features = ["cbor"] }
+rsenml = { version = "0.9", default-features = false, features = ["cbor"] }
 ```
 
 rsenml needs Rust 1.88 or newer.
@@ -92,11 +90,11 @@ rsenml needs Rust 1.88 or newer.
 - Does not panic on cut-off or changed input. Every decoder is fuzzed.
 
 Where the RFC is unclear, the choices rsenml made are in
-[doc/design.md](doc/design.md). One known limit: EXI cannot carry -0.0.
+[doc/design.md](https://github.com/nhenehan/rsenml/blob/main/doc/design.md). One known limit: EXI cannot carry -0.0.
 
 ## Examples
 
-- [`examples/coap-todo`](examples/coap-todo/README.md) is a todo list served
+- [`examples/coap-todo`](https://github.com/nhenehan/rsenml/blob/main/examples/coap-todo/README.md) is a todo list served
   over CoAP with SenML EXI messages. The server uses rsenml. The four clients are
   in Rust (rsenml), Java (Californium and EXIficient), C (libcoap and exip) and C#
   (Com.AugustCellars.CoAP and Nagasena for .NET). Run `./build.sh`, then
@@ -104,7 +102,7 @@ Where the RFC is unclear, the choices rsenml made are in
 
 ## License
 
-BSD-3-Clause, see [LICENSE](LICENSE). The downloaded standards and third
+BSD-3-Clause, see [LICENSE](https://github.com/nhenehan/rsenml/blob/main/LICENSE). The downloaded standards and third
 parties keep their own licenses.
 
 ## For maintainers
@@ -119,10 +117,10 @@ parties keep their own licenses.
 - Every case round-trips through all eight media types. Decoders do not panic on
   cut-off or changed input.
 - The readings of unclear points of the RFC, the library choices and the known
-  limits are in [doc/design.md](doc/design.md). The requirement-by-requirement
-  checklist is in [doc/conformance.md](doc/conformance.md). The other Rust SenML
-  and EXI libraries are surveyed in [doc/landscape.md](doc/landscape.md) and
-  measured in [doc/comparison.md](doc/comparison.md).
+  limits are in [doc/design.md](https://github.com/nhenehan/rsenml/blob/main/doc/design.md). The requirement-by-requirement
+  checklist is in [doc/conformance.md](https://github.com/nhenehan/rsenml/blob/main/doc/conformance.md). The other Rust SenML
+  and EXI libraries are surveyed in [doc/landscape.md](https://github.com/nhenehan/rsenml/blob/main/doc/landscape.md) and
+  measured in [doc/comparison.md](https://github.com/nhenehan/rsenml/blob/main/doc/comparison.md).
 
 ### Crates
 
@@ -133,7 +131,7 @@ parties keep their own licenses.
 | `rsenml-json` | `application/senml+json`, `sensml+json` | [nanojson](https://crates.io/crates/nanojson) |
 | `rsenml-cbor` | `application/senml+cbor`, `sensml+cbor` | [minicbor](https://crates.io/crates/minicbor) |
 | `rsenml-xml` | `application/senml+xml`, `sensml+xml` | [xmlparser](https://crates.io/crates/xmlparser) |
-| `rsenml-exi` | `application/senml-exi`, `sensml-exi` | [rexi](https://github.com/nhenehan/rexi) (`rexi-core`, `no_std`) |
+| `rsenml-exi` | `application/senml-exi`, `sensml-exi` | [rexi-core](https://crates.io/crates/rexi-core) (`no_std`) |
 | `rsenml-tests` | RFC vectors, round trips, EXIficient bytes, robustness (not published) | |
 
 Each representation reads whole packs (`decode`, `decode_unchecked`), record by
@@ -144,8 +142,9 @@ record (`RecordReader`), and writes whole packs (`encode`, `encode_unchecked`, a
 
 ### Building
 
-rexi is not on crates.io. It is pinned in `third-party.lock` and checked out
-outside the tree:
+The build needs only crates.io. The tools that write and check generated files
+(rexi's schema generator, exip's EXIficient oracle) are pinned in
+`third-party.lock` and checked out outside the tree:
 
 ```bash
 scripts/fetch-third-party.sh          # check out the pinned rexi (schema generator) and exip oracle
@@ -169,3 +168,23 @@ checks against `standards.lock`.
 
 `examples/`, `compare/` and `fuzz/` are separate workspaces. They are built only
 on request, never by the workspace or the gate.
+
+### Releasing
+
+1. Bump the version in `[workspace.package]` and in the rsenml entries of
+   `[workspace.dependencies]` in `Cargo.toml`, and add a `## X.Y.Z - YYYY-MM-DD`
+   section to `CHANGELOG.md`.
+2. Push to `main` and wait for CI (`.github/workflows/ci.yml`, the same checks as
+   `scripts/gate.sh`) to pass.
+3. Push the tag `vX.Y.Z`. The release workflow (`.github/workflows/release.yml`)
+   runs CI again, checks that the tag matches the version and that the crates
+   package, and then waits for an approval of the `crates-io` environment on the
+   run's page. After the approval it publishes every crate to crates.io and makes
+   the GitHub Release from the CHANGELOG section.
+4. If crates.io stops the publish partway (for example its limit on new crates),
+   use **Re-run failed jobs**: crates already on crates.io at that version are
+   skipped.
+
+Set up the `crates-io` environment once, before the first tag: you as the required
+reviewer, tags matching `v*` only, and the `CARGO_REGISTRY_TOKEN` secret in the
+environment (not the repository).

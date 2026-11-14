@@ -199,7 +199,7 @@ The section 6 dump (195 bytes) decoded and re-encoded by rsenml is byte-identica
 
 ## 5. Dependencies
 
-Unique packages in the normal (non-dev, non-build) dependency tree for the host target, the library itself included: `cargo tree -e normal -p <probe> --prefix none` on a probe crate under `compare/probes/` that depends on that library alone, so features are not unified with the other libraries. *Local* counts path packages (rsenml's own crates and rexi). `no_std` is read from the crate's `src/lib.rs`.
+Unique packages in the normal (non-dev, non-build) dependency tree for the host target, the library itself included: `cargo tree -e normal -p <probe> --prefix none` on a probe crate under `compare/probes/` that depends on that library alone, so features are not unified with the other libraries. *Local* counts path packages (rsenml's own crates). `no_std` is read from the crate's `src/lib.rs`.
 
 | library | probe | packages | of which local | `no_std` |
 |---|---|---|---|---|
@@ -221,7 +221,7 @@ Minimal `#![no_std]` `#![no_main]` binaries under `compare/footprint/`, built wi
 | baseline | 808 | 8 | 0 | 32772 | 0 | runtime + bump allocator, one allocation, no codec |
 | rsenml `cbor` | 28768 | 2040 | 0 | 32772 | 27960 | decode + validate + encode the RFC section 6 dump; bump allocator |
 | rsenml `json` | 39516 | 3959 | 0 | 32772 | 38708 | decode + validate + encode the 2nd example of 5.1.2; bump allocator |
-| rsenml `exi` | 99180 | 28768 | 0 | 32772 | 98372 | decode + validate + encode the RFC section 8 bit-packed dump; bump allocator |
+| rsenml `exi` | 100668 | 28816 | 0 | 32772 | 99860 | decode + validate + encode the RFC section 8 bit-packed dump; bump allocator |
 | senml-cbor | 5668 | 539 | 0 | 0 | 4860 | decode + encode the RFC section 6 dump; no allocator (fixed arrays) |
 
 sindit-senml and coapum-senml need `std` and are not measured here. The four binaries do not process the same pack in every case (EXI uses the section 8 dump of the first 5.1.2 example; the others the second 5.1.2 example), which does not change which code is linked.
@@ -232,16 +232,16 @@ Median time per call. Each decoder reads its own library's encoding of the data 
 
 | library / format | RFC 5.1.3 decode | RFC 5.1.3 encode | synthetic 200 decode | synthetic 200 encode | decode includes |
 |---|---|---|---|---|---|
-| rsenml JSON | 3.0 µs | 2.5 µs | 131.3 µs | 86.2 µs | decode validates |
-| rsenml JSON + resolve | 4.7 µs | - | 178.2 µs | - | decode, validate and resolve (what sindit-senml's parse_json does) |
-| rsenml CBOR | 2.1 µs | 1.1 µs | 55.0 µs | 134.8 µs | decode validates |
-| rsenml XML | 7.3 µs | 1.8 µs | 78.4 µs | 345.8 µs | decode validates |
-| rsenml EXI bit-packed | 44.7 µs | 30.3 µs | 776.3 µs | 52.8 µs | decode validates |
-| rsenml EXI byte-aligned | 48.2 µs | 4.8 µs | 111.9 µs | 54.1 µs | decode validates |
-| sindit-senml JSON | 4.7 µs | 1.2 µs | 805.3 µs | 195.0 µs | parse_json: decode, validate, resolve |
-| coapum-senml JSON | 1.8 µs | 13.4 µs | 584.9 µs | 291.7 µs | from_json_bytes + validate() |
-| coapum-senml CBOR | 17.7 µs | 9.3 µs | 927.4 µs | 22.4 µs | from_cbor_validated |
-| senml-cbor CBOR | 2.4 µs | 1.7 µs | 49.6 µs | 2.6 µs | no validation; caller-supplied record array and output buffer |
+| rsenml JSON | 2.8 µs | 2.1 µs | 60.5 µs | 38.5 µs | decode validates |
+| rsenml JSON + resolve | 3.7 µs | - | 75.7 µs | - | decode, validate and resolve (what sindit-senml's parse_json does) |
+| rsenml CBOR | 1.7 µs | 866 ns | 31.3 µs | 17.2 µs | decode validates |
+| rsenml XML | 3.3 µs | 2.1 µs | 72.3 µs | 46.9 µs | decode validates |
+| rsenml EXI bit-packed | 5.4 µs | 3.8 µs | 89.5 µs | 48.6 µs | decode validates |
+| rsenml EXI byte-aligned | 5.8 µs | 3.5 µs | 88.5 µs | 46.3 µs | decode validates |
+| sindit-senml JSON | 3.4 µs | 899 ns | 56.6 µs | 13.8 µs | parse_json: decode, validate, resolve |
+| coapum-senml JSON | 1.4 µs | 953 ns | 34.2 µs | 19.2 µs | from_json_bytes + validate() |
+| coapum-senml CBOR | 3.1 µs | 560 ns | 76.8 µs | 11.8 µs | from_cbor_validated |
+| senml-cbor CBOR | 151 ns | 98 ns | 4.2 µs | 2.0 µs | no validation; caller-supplied record array and output buffer |
 
 ## Not measured
 

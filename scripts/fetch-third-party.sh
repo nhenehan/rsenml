@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Fetch the tools pinned in third-party.lock (rexi's schema generator, exip's EXIficient
 # oracle) into a cache outside the working tree. The build itself does not need them:
-# Cargo gets rexi from GitHub.
+# Cargo gets rexi-core from crates.io.
 #
 #   scripts/fetch-third-party.sh                 check out every pin (a commit or a tag)
 #   scripts/fetch-third-party.sh --check         exit 1 unless every checkout is present,

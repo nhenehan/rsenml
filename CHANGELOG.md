@@ -1,7 +1,14 @@
 # Changelog
 
-## 0.9.2
+## 0.9.2 - 2026-11-14
 
+- **On crates.io.** `rsenml = "0.9"`. rsenml-exi now uses `rexi-core` 0.3 from
+  crates.io instead of rexi's git tag `v0.2.0`, and its grammar tables are
+  regenerated with rexi-schema-gen 0.3.0. rexi stays out of rsenml's API, so
+  nothing changes for callers.
+- **CI and releases** on GitHub Actions: `ci.yml` runs the checks of
+  `scripts/gate.sh`; `release.yml` publishes a version tag to crates.io after an
+  approval.
 - **Fix: a base-only record with an unknown label** (`[{"bn":"a:","bt":1,"ver":2}, …]`)
   was refused with "neither a value nor a sum". Readers ignore unknown labels
   ([RFC 8428 section 4.4](https://www.rfc-editor.org/rfc/rfc8428#section-4.4)),

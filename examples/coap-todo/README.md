@@ -26,7 +26,7 @@ This example is not part of the rsenml build. The root `Cargo.toml` leaves out
 `build.sh` says which clients it skipped and why. Both scripts take
 `--only rust,java` to limit the clients. What each client needs:
 
-- **Rust:** cargo. Cargo gets rexi from GitHub at the tag rsenml names.
+- **Rust:** cargo. Cargo gets rexi-core from crates.io.
 - **Java:** Java 25 and Maven. Californium and EXIficient come from Maven Central.
 - **C:** CMake, a C compiler and git. `scripts/fetch-third-party.sh` checks out
   exip and libcoap at their pins in `third-party.lock`, into

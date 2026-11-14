@@ -39,9 +39,9 @@ first choices did not survive contact with the source:
 - **CBOR: minicbor, as planned**, without its `half` feature: half-precision floats
   (the RFC's own example uses one) are converted in `rsenml_core::codec::number`, which
   saves the `half` crate.
-- **EXI: rexi**, through rexi's `no_std` support, as a git dependency on
-  [github.com/nhenehan/rexi](https://github.com/nhenehan/rexi) at its release tag
-  (`v0.2.0`); `Cargo.lock` records the exact commit. The grammar tables are
+- **EXI: rexi**, through rexi's `no_std` support: `rexi-core` 0.3 from
+  [crates.io](https://crates.io/crates/rexi-core). The grammar tables come from
+  rexi-schema-gen at the matching tag (`v0.3.0`, in `third-party.lock`). They are
   generated with schemaId `"a"`, so rexi itself refuses a stream that names
   another schema.
 

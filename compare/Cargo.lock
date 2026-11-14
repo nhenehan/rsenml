@@ -411,8 +411,9 @@ checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
 
 [[package]]
 name = "rexi-core"
-version = "0.2.0"
-source = "git+https://github.com/nhenehan/rexi?tag=v0.2.0#db7bb96f99fbf48b2b69235c214c42053cda99cb"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "efbaef23af3794209e77a2491682006dd02958f6f955be1e945fee948b735b9b"
 
 [[package]]
 name = "rsenml"

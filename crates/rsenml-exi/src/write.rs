@@ -154,8 +154,8 @@ impl<'a> SliceBuf<'a> {
 }
 
 impl ByteSink for SliceBuf<'_> {
-    fn put_bytes(&mut self, bytes: &[u8]) -> core::result::Result<(), IoErrorKind> {
-        self.0.put_bytes(bytes)
+    fn write_bytes(&mut self, bytes: &[u8]) -> core::result::Result<(), IoErrorKind> {
+        self.0.write_bytes(bytes)
     }
 }
 
