@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Writes the conformance vectors and test cases, with rsenml's results and bytes,
 # as TSV into crates/rsenml-tests/fixtures/export (compare/src/export.rs). Other
-# implementations (SenML.jl) test against these files.
+# implementations (SenMLFormat, the Julia port) test against these files.
 #
 #   scripts/export-fixtures.sh           regenerate
 #   scripts/export-fixtures.sh --check   exit 1 if the committed files differ

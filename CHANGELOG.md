@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.9.2
 
 - **Standards are linked, not committed**: `spec/` is gone (RFC 8428, 8798,
   9100, 9193 and the section 8 XSD). `scripts/fetch-standards.sh` downloads RFC
@@ -10,7 +10,7 @@
   there; the gate checks them. Docs link to rfc-editor.org.
 - **Exported test data**: `scripts/export-fixtures.sh` writes the conformance
   vectors and the test cases, with rsenml's verdicts and bytes in every format,
-  as TSV in `crates/rsenml-tests/fixtures/export` (for SenML.jl). The gate
+  as TSV in `crates/rsenml-tests/fixtures/export` (for SenMLFormat, the Julia port). The gate
   checks that they are up to date.
 
 ## 0.9.1

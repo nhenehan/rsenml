@@ -55,7 +55,7 @@ done
 step "generated EXI tables"
 scripts/gen-tables.sh --check
 
-step "exported vectors and cases (SenML.jl)"
+step "exported vectors and cases (SenMLFormat)"
 scripts/export-fixtures.sh --check
 
 if [[ $QUICK -eq 0 ]]; then
