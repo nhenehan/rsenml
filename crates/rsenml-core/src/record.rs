@@ -247,7 +247,11 @@ impl<'a> Record<'a> {
             || self.extensions.iter().any(Extension::is_base)
     }
 
-    /// True when the record carries any regular (non-base) field.
+    /// True when the record carries any regular (non-base) field of RFC 8428.
+    ///
+    /// Extensions do not count: a reader ignores labels it does not know
+    /// ([section 4.4](https://www.rfc-editor.org/rfc/rfc8428#section-4.4)), so a
+    /// record of base fields plus an unknown label is still base-only.
     pub fn has_regular_fields(&self) -> bool {
         self.name.is_some()
             || self.unit.is_some()
@@ -255,7 +259,6 @@ impl<'a> Record<'a> {
             || self.sum.is_some()
             || self.time.is_some()
             || self.update_time.is_some()
-            || self.extensions.iter().any(|e| !e.is_base())
     }
 
     /// A record with only base fields sets values for the records after it. It is

@@ -309,6 +309,23 @@ mod tests {
     }
 
     #[test]
+    fn unknown_label_keeps_record_base_only() {
+        // Readers ignore unknown labels (RFC 8428 section 4.4), so a record of base
+        // fields plus one is still base-only. A `_` label is still refused.
+        let next = Record::new().with_name("x").with_value(1.0);
+        let base = |label: &'static str| {
+            Record::new()
+                .with_base_name("a:")
+                .with_extension(label, Value::Number(2.0))
+        };
+        assert_eq!(pack(vec![base("ver"), next.clone()]).validate(), Ok(()));
+        assert!(matches!(
+            pack(vec![base("ver_"), next]).validate(),
+            Err(Error::MustUnderstand { .. })
+        ));
+    }
+
+    #[test]
     fn value_and_name_rules() {
         assert_eq!(
             pack(vec![Record::new().with_name("a").with_time(1.0)]).validate(),

@@ -208,6 +208,14 @@ pub fn all() -> Vec<Vector> {
             accept(r#"[{"n":"x","v":1}]"#),
         ),
         (
+            "j-base-only-unknown-label",
+            "4.4",
+            N,
+            "base-only record with an unknown label: the label is ignored, the record stays base-only",
+            r#"[{"bn":"a:","bt":1,"ver":2},{"n":"x","v":1}]"#,
+            accept(r#"[{"bn":"a:","bt":1},{"n":"x","v":1}]"#),
+        ),
+        (
             "j-bver-11",
             "4.4",
             N,
@@ -533,6 +541,18 @@ pub fn all() -> Vec<Vector> {
             "unknown integer key 9 (text value) is ignored",
             one("x", vec![(k(2), int(1)), (k(9), text("foo"))]),
             accept(r#"[{"n":"x","v":1}]"#),
+        ),
+        (
+            "c-base-only-unknown-key",
+            "4.4",
+            N,
+            C,
+            "base-only record with unknown integer key 9: the key is ignored, the record stays base-only",
+            array(vec![
+                map(vec![(int(-2), text("a:")), (int(-3), int(1)), (int(9), int(2))]),
+                map(vec![(int(0), text("x")), (int(2), int(1))]),
+            ]),
+            accept(r#"[{"bn":"a:","bt":1},{"n":"x","v":1}]"#),
         ),
         (
             "c-unknown-int-key-map",

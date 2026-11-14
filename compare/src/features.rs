@@ -52,7 +52,9 @@ const MEASURED: &[(&str, &str, &[&str])] = &[
         &[
             "j-must-understand",
             "j-unknown-label",
+            "j-base-only-unknown-label",
             "c-unknown-int-key",
+            "c-base-only-unknown-key",
             "c-unknown-int-key-map",
             "c-text-v-extra",
             "c-must-understand",

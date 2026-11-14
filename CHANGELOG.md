@@ -2,6 +2,13 @@
 
 ## 0.9.2
 
+- **Fix: a base-only record with an unknown label** (`[{"bn":"a:","bt":1,"ver":2}, …]`)
+  was refused with "neither a value nor a sum". Readers ignore unknown labels
+  ([RFC 8428 section 4.4](https://www.rfc-editor.org/rfc/rfc8428#section-4.4)),
+  so `Record::has_regular_fields` no longer counts extensions, and the record is
+  base-only again. A label ending in `_` is still refused. Found by
+  rsenml-interop with cisco/senml's `data.json`; new vectors
+  `j-base-only-unknown-label` and `c-base-only-unknown-key`.
 - **Standards are linked, not committed**: `spec/` is gone (RFC 8428, 8798,
   9100, 9193 and the section 8 XSD). `scripts/fetch-standards.sh` downloads RFC
   8428 from rfc-editor.org into `~/.cache/rsenml/standards` and takes the XSD out
