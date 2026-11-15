@@ -1,7 +1,11 @@
-//! [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428), Sensor Measurement Lists
-//! (SenML), and its streaming form SenSML
-//! ([section 4.8](https://www.rfc-editor.org/rfc/rfc8428#section-4.8)), in all four
-//! formats: JSON, CBOR, XML and EXI.
+//! Read and write [SenML](https://www.rfc-editor.org/rfc/rfc8428) (Sensor
+//! Measurement Lists, RFC 8428) and its streaming form SenSML
+//! ([section 4.8](https://www.rfc-editor.org/rfc/rfc8428#section-4.8)) in all
+//! four formats: JSON, CBOR, XML and EXI.
+//!
+//! A SenML message is a [`Pack`] of [`Record`]s. Each record has a name, a value,
+//! and maybe a unit and a time. Base fields (`bn`, `bt`, `bu`, ...) set values for
+//! the records after them, so a long device name is written only once.
 //!
 //! ```
 //! use rsenml::{MediaType, Pack, Record};
@@ -21,9 +25,61 @@
 //! # Ok::<(), rsenml::Error>(())
 //! ```
 //!
-//! Each format is a feature (`json`, `cbor`, `xml`, `exi`; all on by default) and a
-//! module here. The data model is [`rsenml_core`], re-exported. `no_std`; needs
-//! `alloc`.
+//! The [user guide](https://nhenehan.github.io/rsenml/) walks through one small
+//! program per idea.
+//!
+//! # Formats
+//!
+//! Each format is a module here and a feature of this crate (all on by default):
+//!
+//! | Module | Feature | Media types | RFC 8428 |
+//! |---|---|---|---|
+//! | [`json`] | `json` | `application/senml+json`, `sensml+json` | [section 5](https://www.rfc-editor.org/rfc/rfc8428#section-5) |
+//! | [`cbor`] | `cbor` | `application/senml+cbor`, `sensml+cbor` | [section 6](https://www.rfc-editor.org/rfc/rfc8428#section-6) |
+//! | [`xml`] | `xml` | `application/senml+xml`, `sensml+xml` | [section 7](https://www.rfc-editor.org/rfc/rfc8428#section-7) |
+//! | [`exi`] | `exi` | `application/senml-exi`, `sensml-exi` | [section 8](https://www.rfc-editor.org/rfc/rfc8428#section-8) |
+//!
+//! [`decode`] and [`encode`] pick the format from a [`MediaType`], which also
+//! converts to and from content-type text and CoAP Content-Format numbers.
+//!
+//! # Reading and writing
+//!
+//! Every format module has the same shape:
+//!
+//! - `decode` and `encode` for whole packs. Both validate the pack; the
+//!   `_unchecked` versions don't, for packs already known to be valid.
+//! - `encode_into` writes into a fixed buffer and returns the length, or
+//!   [`Error::BufferFull`].
+//! - `RecordReader` reads one record at a time from a whole message.
+//! - `StreamEncoder` writes one record at a time, for SenSML.
+//! - JSON and CBOR also have `StreamDecoder`, which takes bytes as they arrive and
+//!   gives each record once it is complete.
+//!
+//! # Checking and resolving
+//!
+//! [`Pack::validate`] checks the rules of
+//! [section 4](https://www.rfc-editor.org/rfc/rfc8428#section-4);
+//! [`ValidationOptions`] can also require registered units ([`units`]).
+//! [`Pack::resolve`] turns records into [`ResolvedRecord`]s with full names,
+//! units and absolute times
+//! ([section 4.6](https://www.rfc-editor.org/rfc/rfc8428#section-4.6)).
+//! [`Validator`] and [`Resolver`] do the same one record at a time.
+//! [`fragment`] reads `rec=` fragment identifiers.
+//!
+//! # Errors
+//!
+//! Every call returns [`Result`], with one [`Error`] type for all formats. Errors
+//! about a record say which one, counted from 0.
+//!
+//! # `no_std`
+//!
+//! This crate and the ones under it are `#![no_std]` and need only `alloc`. They
+//! build for Cortex-M (`thumbv7em-none-eabihf`) and forbid `unsafe` code. Turn off
+//! the formats you don't use to keep the build small:
+//!
+//! ```toml
+//! rsenml = { version = "0.9", default-features = false, features = ["cbor"] }
+//! ```
 
 #![no_std]
 #![warn(missing_docs)]

@@ -3,7 +3,8 @@
 //! *resolved record* has every base value applied to it and an absolute time, so it
 //! makes sense on its own, outside its pack.
 //!
-//! How rsenml reads the spec where it leaves room (also listed in `doc/design.md`):
+//! How rsenml reads the spec where it leaves room (also listed in the guide,
+//! [Where the RFC is unclear](https://nhenehan.github.io/rsenml/rfc-choices.html)):
 //! - `bv` is added to a numeric `v` only. A record with no value field gets no
 //!   value (it is a sum-only record), even when a `bv` is in force.
 //! - The sum is `bs + s` when either one is present

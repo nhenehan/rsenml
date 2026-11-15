@@ -1,15 +1,14 @@
 # rsenml
 
-SenML (Sensor Measurement Lists, [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428))
-is a small, standard way for sensors to send readings: a list of records, each
-with a name, a value, and maybe a unit and a time. rsenml reads and writes SenML
-in Rust. It also handles SenSML, the streaming form of SenML.
+rsenml reads and writes sensor readings in Rust. The format is SenML (Sensor
+Measurement Lists, [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428)), a small
+IETF standard: a list of records, each with a name, a value, and maybe a unit and
+a time. A thermostat, a water meter and a web app can all agree on it without
+sharing any code.
 
-**Supported:** all four SenML representations, JSON, CBOR, XML and EXI, over one
-data model. EXI is SenML's XML form coded as EXI (Efficient XML Interchange), as
-RFC 8428 section 8 describes, built on [rexi](https://github.com/nhenehan/rexi).
-Every crate is `no_std` (it needs only `alloc`), forbids `unsafe`, and builds for
-Cortex-M (`thumbv7em-none-eabihf`).
+**Supported:** all four SenML formats (JSON, CBOR, XML and EXI) over one data
+model, and SenSML, the streaming form. Every crate is `no_std` (it needs only
+`alloc`), forbids `unsafe`, and builds for Cortex-M.
 
 ## Quick example
 
@@ -70,121 +69,125 @@ keep only some, turn off the defaults:
 rsenml = { version = "0.9", default-features = false, features = ["cbor"] }
 ```
 
-rsenml needs Rust 1.88 or newer.
+You can also depend on one format's crate directly (`rsenml-cbor = "0.9"` and so
+on). rsenml needs Rust 1.88 or newer.
 
-## What it does
+## Learn more
 
-- Reads and writes all eight SenML media types: `application/senml+json`,
-  `senml+cbor`, `senml+xml`, `senml-exi`, and their SenSML twins. It also knows
-  their CoAP Content-Format numbers.
-- Reads whole packs (`decode`) or one record at a time (`RecordReader`). Writes
-  whole packs (`encode`), also into a fixed buffer (`encode_into`), or one record
-  at a time (`StreamEncoder`). JSON and CBOR can also read SenSML streams as the
-  bytes arrive (`StreamDecoder`).
-- Checks packs against the RFC's rules (`Pack::validate`), and resolves them into
-  full names and absolute times (`Pack::resolve`).
-- Includes the RFC 8428 units registry and `rec=` fragment identifiers.
-- Matches the RFC byte for byte. Its CBOR example and both EXI examples
-  (bit-packed and byte-aligned) come out exactly the same, in both directions.
-- Writes the same EXI bytes as EXIficient 1.0.7 on every test case.
-- Does not panic on cut-off or changed input. Every decoder is fuzzed.
+- **[The user guide](https://nhenehan.github.io/rsenml/)** works through one small
+  program per idea, from a first pack to streaming and small devices. To read it
+  offline: `mdbook-mermaid install guide && mdbook serve guide` (you need `mdbook`
+  and `mdbook-mermaid`).
+- **[API documentation](https://docs.rs/rsenml)** on docs.rs.
+- **[`examples/basics`](https://github.com/nhenehan/rsenml/blob/main/examples/basics/README.md)**
+  contains the programs from the guide.
+- **[`examples/coap-todo`](https://github.com/nhenehan/rsenml/blob/main/examples/coap-todo/README.md)**
+  is a todo list served over CoAP with SenML EXI messages. The server uses rsenml;
+  the clients are in Rust, Java (Californium and EXIficient), C (libcoap and exip)
+  and C# (Nagasena for .NET).
 
-Where the RFC is unclear, the choices rsenml made are in
-[doc/design.md](https://github.com/nhenehan/rsenml/blob/main/doc/design.md). One known limit: EXI cannot carry -0.0.
+## SenML implementation
 
-## Examples
+| Feature | Status | Notes |
+|---|---|---|
+| JSON (`application/senml+json`) | Supported | |
+| CBOR (`application/senml+cbor`) | Supported | Integer keys of Table 4; SenSML as an indefinite-length array |
+| XML (`application/senml+xml`) | Supported | UTF-8 only; a DTD is refused |
+| EXI (`application/senml-exi`) | Supported | Strict, with the section 8 schema, built on [rexi](https://github.com/nhenehan/rexi) |
+| EXI bit-packed and byte-aligned | Supported | Written with the options in the header (schemaId `"a"`); streams without them are read when you give the options |
+| SenSML streams | Supported | All four media types |
+| Reading a stream as bytes arrive | JSON and CBOR | XML and EXI read record by record from whole input |
+| Validation | Supported | The rules of section 4; registered units on request |
+| Resolving | Supported | Full names, absolute times, base values and sums (section 4.6) |
+| Units registry | Supported | Table 6 of RFC 8428 |
+| `rec=` fragment identifiers | Supported | Section 9.1 |
+| CoAP Content-Formats | Supported | All eight media types |
+| Extensions in EXI | Not supported | Strict EXI can't carry them: dropped by default, or refused |
+| Non-strict EXI | Not supported | |
+| XPointer fragment identifiers | Not supported | Section 9.2 |
 
-- [`examples/coap-todo`](https://github.com/nhenehan/rsenml/blob/main/examples/coap-todo/README.md) is a todo list served
-  over CoAP with SenML EXI messages. The server uses rsenml. The four clients are
-  in Rust (rsenml), Java (Californium and EXIficient), C (libcoap and exip) and C#
-  (Com.AugustCellars.CoAP and Nagasena for .NET). Run `./build.sh`, then
-  `./demo.sh`.
+One known limit: EXI cannot carry -0.0, so it is written as 0. The other choices
+rsenml makes where the RFC leaves room are in the guide's
+[Where the RFC is unclear](https://nhenehan.github.io/rsenml/rfc-choices.html).
+
+## Standards
+
+| Standard | What it is | Implemented |
+|---|---|---|
+| [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428) | SenML itself: the data model and the JSON, CBOR, XML and EXI formats | Yes |
+| [RFC 9100](https://www.rfc-editor.org/rfc/rfc9100) | Updates RFC 8428: `bver` becomes a bitmap of features | No |
+| [RFC 8798](https://www.rfc-editor.org/rfc/rfc8798) | More units for the SenML Units registry, and secondary units | No |
+| [RFC 9193](https://www.rfc-editor.org/rfc/rfc9193) | Fields that give the Content-Format of a data value (`ct`, `ce`) | No |
+| [RFC 8790](https://www.rfc-editor.org/rfc/rfc8790) | FETCH and PATCH of SenML records over CoAP | No |
+
+[references.md](https://github.com/nhenehan/rsenml/blob/main/references.md) lists
+these and the other standards rsenml uses (JSON, CBOR, EXI, base64url, CoAP).
+
+## Conformance and interoperability
+
+Test results from rsenml's CI.
+
+| Test | Result |
+|---|---|
+| RFC 8428's JSON examples (sections 5.1.1 to 5.1.7, 11 packs) | All read and validate; 5.1.4 is 5.1.3 resolved, exactly |
+| RFC 8428's CBOR dump (section 6) | Same bytes, both ways |
+| RFC 8428's EXI dumps (section 8, bit-packed and byte-aligned) | Same bytes, both ways; Table 3's 161 bytes for 5.1.3 |
+| EXI compared with EXIficient 1.0.7, 16 packs, both alignments | All 32 streams have the same bytes |
+| Every test pack through all eight media types | Reads back the same |
+| Decoders on cut-off and randomly changed input | Errors, never a panic; every decoder is also fuzzed |
+
+The RFC examples are read from short, cited excerpts of the RFC
+(`crates/rsenml-tests/fixtures/rfc8428`), checked against the full RFC text.
+
+[`doc/comparison.md`](https://github.com/nhenehan/rsenml/blob/main/doc/comparison.md)
+compares rsenml with the other Rust SenML crates on the same test vectors: features,
+verdicts, sizes, dependencies, footprint and speed.
+[SenMLFormat](https://github.com/nhenehan/SenMLFormat.jl), the Julia version of
+rsenml, writes the same bytes and gives the same verdicts.
+
+## Rust library features
+
+| Feature | Crate | Description |
+|---|---|---|
+| One dependency | `rsenml` | Re-exports the crates below by feature; `decode` and `encode` by media type |
+| Data model | `rsenml-core` | Records, packs, validation, resolving, units, `rec=` fragments, media types |
+| JSON | `rsenml-json` | On [nanojson](https://crates.io/crates/nanojson) |
+| CBOR | `rsenml-cbor` | On [minicbor](https://crates.io/crates/minicbor) |
+| XML | `rsenml-xml` | On [xmlparser](https://crates.io/crates/xmlparser) |
+| EXI | `rsenml-exi` | On [rexi-core](https://crates.io/crates/rexi-core) |
+| Record by record | every format | `RecordReader` and `StreamEncoder`; `StreamDecoder` for JSON and CBOR |
+| Fixed-buffer output | every format | `encode_into` |
+| `no_std` | every crate | Needs only `alloc` |
+
+## Safe with untrusted data
+
+A few hostile bytes can ask a decoder for a lot of work, such as an array of 2<sup>64</sup>
+records or endless nesting. rsenml's decoders return an error instead: deep nesting
+stops at a fixed depth, huge announced lengths fail cleanly, and XML DTDs (and
+so entity expansion) are refused. `decode` also validates the pack, so what you
+get back follows RFC 8428's rules.
+
+See the guide's [Untrusted input](https://nhenehan.github.io/rsenml/untrusted-input.html) chapter.
+
+## Thanks
+
+- **Cullen Jennings, Zach Shelby, Jari Arkko, Ari Keränen and Carsten Bormann**
+  wrote RFC 8428. Its examples, hex dumps and schema are the first tests rsenml
+  must pass.
+- **Daniel Peintner** wrote [EXIficient](https://exificient.github.io/) with
+  Richard Kuntschke at Siemens. rsenml's EXI bytes are checked against EXIficient's.
+- **Toralf Wittner** ([minicbor](https://crates.io/crates/minicbor)), **Yevhenii
+  Reizner** ([xmlparser](https://crates.io/crates/xmlparser)) and **Gronis**
+  ([nanojson](https://crates.io/crates/nanojson)) wrote the small `no_std` parsers
+  rsenml is built on.
+
+Thank you.
 
 ## License
 
-BSD-3-Clause, see [LICENSE](https://github.com/nhenehan/rsenml/blob/main/LICENSE). The downloaded standards and third
-parties keep their own licenses.
+BSD-3-Clause, see [LICENSE](https://github.com/nhenehan/rsenml/blob/main/LICENSE).
+The RFC 8428 excerpts in `crates/rsenml-tests/fixtures/rfc8428` keep the IETF
+Trust's license (see the README there).
 
-## For maintainers
-
-### Status
-
-- All of the RFC's examples, read from the RFC text at test time, decode and
-  validate. Its CBOR dump (section 6) and both EXI dumps (section 8, bit-packed and
-  byte-aligned) are reproduced **byte for byte** in both directions, and the EXI
-  size of the section 5.1.3 example is Table 3's 161 bytes.
-- EXI output is byte-identical to EXIficient 1.0.7 on all 32 test streams.
-- Every case round-trips through all eight media types. Decoders do not panic on
-  cut-off or changed input.
-- The readings of unclear points of the RFC, the library choices and the known
-  limits are in [doc/design.md](https://github.com/nhenehan/rsenml/blob/main/doc/design.md). The requirement-by-requirement
-  checklist is in [doc/conformance.md](https://github.com/nhenehan/rsenml/blob/main/doc/conformance.md). The other Rust SenML
-  and EXI libraries are surveyed in [doc/landscape.md](https://github.com/nhenehan/rsenml/blob/main/doc/landscape.md) and
-  measured in [doc/comparison.md](https://github.com/nhenehan/rsenml/blob/main/doc/comparison.md).
-
-### Crates
-
-| Crate | Representation | Built on |
-|---|---|---|
-| `rsenml` | all of the below as features (`json`, `cbor`, `xml`, `exi`), `decode`/`encode` by media type | |
-| `rsenml-core` | data model, validation, resolution, units registry, `rec=` fragments, media types | nothing |
-| `rsenml-json` | `application/senml+json`, `sensml+json` | [nanojson](https://crates.io/crates/nanojson) |
-| `rsenml-cbor` | `application/senml+cbor`, `sensml+cbor` | [minicbor](https://crates.io/crates/minicbor) |
-| `rsenml-xml` | `application/senml+xml`, `sensml+xml` | [xmlparser](https://crates.io/crates/xmlparser) |
-| `rsenml-exi` | `application/senml-exi`, `sensml-exi` | [rexi-core](https://crates.io/crates/rexi-core) (`no_std`) |
-| `rsenml-tests` | RFC vectors, round trips, EXIficient bytes, robustness (not published) | |
-
-Each representation reads whole packs (`decode`, `decode_unchecked`), record by
-record (`RecordReader`), and writes whole packs (`encode`, `encode_unchecked`, and
-`encode_into` a fixed buffer), and writes SenSML a record at a time
-(`StreamEncoder`). JSON and CBOR also decode SenSML streams as their bytes arrive
-(`StreamDecoder`).
-
-### Building
-
-The build needs only crates.io. The tools that write and check generated files
-(rexi's schema generator, exip's EXIficient oracle) are pinned in
-`third-party.lock` and checked out outside the tree:
-
-```bash
-scripts/fetch-third-party.sh          # check out the pinned rexi (schema generator) and exip oracle
-scripts/fetch-standards.sh            # download RFC 8428 (the tests read its examples)
-scripts/gate.sh                       # fmt, clippy, tests, no_std builds, generated files
-scripts/gate.sh --quick               # the same without the EXIficient check (no Java)
-```
-
-| Script | Purpose |
-|---|---|
-| `scripts/fetch-third-party.sh [--check \| --update NAME]` | pinned tools (rexi's schema generator, exip's oracle) in `~/.cache/rsenml/third_party` |
-| `scripts/fetch-standards.sh [--check]` | [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428) from rfc-editor.org, and its section 8 XSD taken out of it, checked by sha256 (`standards.lock`), in `~/.cache/rsenml/standards` |
-| `scripts/gen-tables.sh [--check]` | EXI grammar tables of the [section 8 XSD](https://www.rfc-editor.org/rfc/rfc8428#section-8) (rexi-schema-gen) |
-| `scripts/gen-exi-fixtures.sh [--check]` | EXIficient 1.0.7 reference bytes for every test case (exip's `utils/xsd2exip` oracle; Java, Maven) |
-| `scripts/gate.sh [--quick]` | everything a commit must pass |
-| `fuzz/run.sh [seconds]` | every fuzz target for a fixed time, 60 s each by default (nightly Rust, `cargo install cargo-fuzz`) |
-
-Standards are linked, not committed. The tests read their vectors from the RFC
-text itself, which `scripts/fetch-standards.sh` downloads from rfc-editor.org and
-checks against `standards.lock`.
-
-`examples/`, `compare/` and `fuzz/` are separate workspaces. They are built only
-on request, never by the workspace or the gate.
-
-### Releasing
-
-1. Bump the version in `[workspace.package]` and in the rsenml entries of
-   `[workspace.dependencies]` in `Cargo.toml`, and add a `## X.Y.Z - YYYY-MM-DD`
-   section to `CHANGELOG.md`.
-2. Push to `main` and wait for CI (`.github/workflows/ci.yml`, the same checks as
-   `scripts/gate.sh`) to pass.
-3. Push the tag `vX.Y.Z`. The release workflow (`.github/workflows/release.yml`)
-   runs CI again, checks that the tag matches the version and that the crates
-   package, and then waits for an approval of the `crates-io` environment on the
-   run's page. After the approval it publishes every crate to crates.io and makes
-   the GitHub Release from the CHANGELOG section.
-4. If crates.io stops the publish partway (for example its limit on new crates),
-   use **Re-run failed jobs**: crates already on crates.io at that version are
-   skipped.
-
-Set up the `crates-io` environment once, before the first tag: you as the required
-reviewer, tags matching `v*` only, and the `CARGO_REGISTRY_TOKEN` secret in the
-environment (not the repository).
+For build instructions, tests, generated files and other development details, see
+[CONTRIBUTING.md](https://github.com/nhenehan/rsenml/blob/main/CONTRIBUTING.md).

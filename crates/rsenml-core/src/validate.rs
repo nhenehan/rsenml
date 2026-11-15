@@ -2,7 +2,8 @@
 //! [RFC 8428 section 4](https://www.rfc-editor.org/rfc/rfc8428#section-4) that
 //! cover the whole pack, which no single field can check alone.
 //!
-//! How rsenml reads the spec where it leaves room (also listed in `doc/design.md`):
+//! How rsenml reads the spec where it leaves room (also listed in the guide,
+//! [Where the RFC is unclear](https://nhenehan.github.io/rsenml/rfc-choices.html)):
 //! - A record with only base fields sets values for the records after it. It needs
 //!   no value or name (see the first record of the example in
 //!   [section 5.1.7](https://www.rfc-editor.org/rfc/rfc8428#section-5.1.7)). Every

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.2 - 2026-11-14
+## 0.9.2 - 2026-11-15
 
 - **On crates.io.** `rsenml = "0.9"`. rsenml-exi now uses `rexi-core` 0.3 from
   crates.io instead of rexi's git tag `v0.2.0`, and its grammar tables are
@@ -16,12 +16,18 @@
   base-only again. A label ending in `_` is still refused. Found by
   rsenml-interop with cisco/senml's `data.json`; new vectors
   `j-base-only-unknown-label` and `c-base-only-unknown-key`.
-- **Standards are linked, not committed**: `spec/` is gone (RFC 8428, 8798,
-  9100, 9193 and the section 8 XSD). `scripts/fetch-standards.sh` downloads RFC
-  8428 from rfc-editor.org into `~/.cache/rsenml/standards` and takes the XSD out
-  of its section 8, both checked by sha256 against `standards.lock`. The tests,
-  `gen-tables.sh`, `gen-exi-fixtures.sh` and the coap-todo example read them
-  there; the gate checks them. Docs link to rfc-editor.org.
+- **RFC text: short cited excerpts, not whole RFCs.** `spec/` is gone (the full
+  text of RFC 8428, 8798, 9100 and 9193). The tests read only the parts of RFC 8428
+  they need, its examples, hex dumps and section 8 schema, from
+  `crates/rsenml-tests/fixtures/rfc8428`, which cites the section of each file.
+  `tests/extract.rs` checks them against the full RFC, which
+  `scripts/fetch-standards.sh` downloads (checked by sha256 against
+  `standards.lock`); the full gate and CI run that check.
+- **Docs in a new layout**: a user guide (`guide/`, published on GitHub Pages)
+  with the programs of `examples/basics`; a shorter README with feature,
+  standards and conformance tables; `CONTRIBUTING.md`, `AGENTS.md` and
+  `references.md`. `doc/design.md` and `doc/conformance.md` moved into the guide
+  and CONTRIBUTING.md.
 - **Exported test data**: `scripts/export-fixtures.sh` writes the conformance
   vectors and the test cases, with rsenml's verdicts and bytes in every format,
   as TSV in `crates/rsenml-tests/fixtures/export` (for SenMLFormat, the Julia port). The gate
