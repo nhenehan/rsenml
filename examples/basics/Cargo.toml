@@ -1,0 +1,22 @@
+# The programs of the user guide (guide/): their own workspace, so the rsenml
+# workspace never builds them. Run one with `cargo run --bin first_pack`, or all
+# of them with ./run-all.sh.
+[workspace]
+
+[package]
+name = "rsenml-basics"
+edition = "2024"
+license = "BSD-3-Clause"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+rsenml = { path = "../../crates/rsenml" }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
