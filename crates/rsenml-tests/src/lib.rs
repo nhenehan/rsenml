@@ -1,11 +1,14 @@
 //! Test vectors for rsenml: the examples of
-//! [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428), taken from the RFC text
-//! (fetched by `scripts/fetch-standards.sh`, so every vector can be traced back to
-//! the RFC), and made-up packs that cover what the examples do not.
+//! [RFC 8428](https://www.rfc-editor.org/rfc/rfc8428), read from the excerpts in
+//! `fixtures/rfc8428` (each cites the section it is quoted from, and
+//! `tests/extract.rs` checks them against the RFC text), and made-up packs that
+//! cover what the examples do not.
 
 use std::path::{Path, PathBuf};
 
 use rsenml::{Pack, Record, Value};
+
+pub mod rfc_text;
 
 /// The workspace root.
 pub fn root() -> PathBuf {
@@ -15,80 +18,28 @@ pub fn root() -> PathBuf {
         .map_or_else(|| PathBuf::from("."), Path::to_path_buf)
 }
 
-/// The cache that `scripts/fetch-standards.sh` fills with the standards of
-/// `standards.lock`: `$RSENML_STANDARDS`, else
-/// `${XDG_CACHE_HOME:-~/.cache}/rsenml/standards`. Standards are linked, not
-/// committed.
-pub fn standards_dir() -> PathBuf {
-    let var = |name| {
-        std::env::var_os(name)
-            .filter(|v| !v.is_empty())
-            .map(PathBuf::from)
-    };
-    if let Some(dir) = var("RSENML_STANDARDS") {
-        return dir;
-    }
-    var("XDG_CACHE_HOME")
-        .or_else(|| var("HOME").map(|h| h.join(".cache")))
-        .unwrap_or_else(|| PathBuf::from(".cache"))
-        .join("rsenml/standards")
+/// The folder of RFC 8428 excerpts.
+pub fn excerpts_dir() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/rfc8428")
 }
 
-/// One file of `standards.lock`, from the cache. When it is missing, this says how
-/// to fetch it (on stderr) and returns an empty string, so the tests that need it
-/// fail (`tests/extract.rs` first).
-pub fn standard(file: &str) -> String {
-    let path = standards_dir().join(file);
+/// One excerpt of `fixtures/rfc8428`. A missing file is reported on stderr and
+/// read as empty, so the tests that need it fail.
+pub fn excerpt(file: &str) -> String {
+    let path = excerpts_dir().join(file);
     std::fs::read_to_string(&path).unwrap_or_else(|e| {
-        eprintln!("{}: {e}; run scripts/fetch-standards.sh", path.display());
+        eprintln!("{}: {e}", path.display());
         String::new()
     })
 }
 
-/// The RFC text, with page breaks (footer, form feed, header) removed.
-pub fn rfc_text() -> String {
-    let raw = standard("rfc8428.txt");
-    let mut out = String::new();
-    for line in raw.lines() {
-        let t = line.trim_start();
-        if t.starts_with("Jennings, et al.")
-            || t.starts_with("RFC 8428  ")
-            || t.starts_with('\u{c}')
-        {
-            continue;
-        }
-        out.push_str(line);
-        out.push('\n');
-    }
-    out
-}
-
-/// The text of one section: from its heading to the next heading at column 0 that
-/// is not one of its subsections. A heading is a line that starts with a section
-/// number (digits and dots) followed by two spaces.
-pub fn section(text: &str, number: &str) -> String {
-    let mut out = String::new();
-    let mut inside = false;
-    for line in text.lines() {
-        let heading = line
-            .split_once("  ")
-            .filter(|(n, _)| !n.is_empty() && n.bytes().all(|b| b.is_ascii_digit() || b == b'.'))
-            .map(|(n, _)| n.trim_end_matches('.'));
-        if let Some(n) = heading {
-            if inside && !n.starts_with(&format!("{number}.")) {
-                break;
-            }
-            if n == number {
-                inside = true;
-            }
-        }
-        if inside {
-            out.push_str(line);
-            out.push('\n');
-        }
-    }
-    out
-}
+/// The JSON examples of section 5.1, in the RFC's order. When a section has more
+/// than one, they are named with `a`, `b`, ... after the section number. 5.1.2c is
+/// the SenSML stream the RFC leaves unfinished.
+pub const JSON_EXAMPLES: [&str; 11] = [
+    "5.1.1", "5.1.2a", "5.1.2b", "5.1.2c", "5.1.3", "5.1.4", "5.1.5", "5.1.6", "5.1.7a", "5.1.7b",
+    "5.1.7c",
+];
 
 /// A JSON example of
 /// [section 5.1](https://www.rfc-editor.org/rfc/rfc8428#section-5.1): its name
@@ -101,128 +52,91 @@ pub struct JsonExample {
     pub partial_stream: bool,
 }
 
-/// Every JSON example of section 5.1, in order. An example starts at a line that is
-/// only `[` and ends at a line that is only `]` (or `...`). When a section has more
-/// than one, they are named with `a`, `b`, ... after the section number.
+/// Every JSON example of section 5.1, in order. Each line is trimmed. The
+/// unfinished stream is closed after its last complete record.
 pub fn json_examples() -> Vec<JsonExample> {
-    let text = rfc_text();
-    let mut out = Vec::new();
-    for sub in 1..=7 {
-        let number = format!("5.1.{sub}");
-        let body = section(&text, &number);
-        let mut arrays: Vec<(String, bool)> = Vec::new();
-        let mut current: Option<String> = None;
-        for line in body.lines() {
-            let t = line.trim();
-            match &mut current {
-                None if t == "[" => current = Some(String::from("[\n")),
-                None => {}
-                Some(buf) => {
-                    if t == "]" || t == "..." {
-                        let partial = t == "...";
-                        buf.push(']');
-                        if partial {
-                            // Close the stream after the last complete record.
-                            let trimmed =
-                                buf.trim_end_matches(']').trim_end().trim_end_matches(',');
-                            *buf = format!("{trimmed}\n]");
-                        }
-                        arrays.push((std::mem::take(buf), partial));
-                        current = None;
-                    } else {
-                        buf.push_str(t);
-                        buf.push('\n');
+    JSON_EXAMPLES
+        .iter()
+        .map(|name| {
+            let partial_stream = *name == "5.1.2c";
+            let file = format!("{name}.{}", if partial_stream { "txt" } else { "json" });
+            let mut json = String::new();
+            for line in excerpt(&file).lines() {
+                let t = line.trim();
+                if t == "..." {
+                    let trimmed = json.trim_end().trim_end_matches(',');
+                    json = format!("{trimmed}\n");
+                    break;
+                }
+                json.push_str(t);
+                if t != "]" {
+                    json.push('\n');
+                }
+            }
+            if partial_stream {
+                json.push(']');
+            }
+            JsonExample {
+                name: String::from(*name),
+                json,
+                partial_stream,
+            }
+        })
+        .collect()
+}
+
+/// The excerpt files of one kind in a section: `7.xml`, or `8a.xml` and `8b.xml`.
+fn section_files(section_number: &str, ext: &str) -> Vec<String> {
+    let one = format!("{section_number}.{ext}");
+    if excerpts_dir().join(&one).is_file() {
+        return vec![one];
+    }
+    (b'a'..=b'z')
+        .map(|c| format!("{section_number}{}.{ext}", char::from(c)))
+        .take_while(|f| excerpts_dir().join(f).is_file())
+        .collect()
+}
+
+/// Every `<sensml>` document in a section, each line trimmed.
+pub fn xml_examples(section_number: &str) -> Vec<String> {
+    section_files(section_number, "xml")
+        .iter()
+        .map(|f| {
+            let mut out = String::new();
+            for line in excerpt(f).lines() {
+                out.push_str(line.trim());
+                out.push('\n');
+            }
+            out
+        })
+        .collect()
+}
+
+/// Every hex dump in a section (`0000 a0 30 ...` lines), as bytes. Each line
+/// starts with a 4-digit hex offset; reading a line stops at the first field that
+/// is not a 2-digit hex byte (the ASCII column).
+pub fn hex_dumps(section_number: &str) -> Vec<Vec<u8>> {
+    section_files(section_number, "hex")
+        .iter()
+        .map(|f| {
+            let mut bytes = Vec::new();
+            for line in excerpt(f).lines() {
+                for field in line.trim_start().split(' ').skip(1) {
+                    match (field.len(), u8::from_str_radix(field, 16)) {
+                        (2, Ok(b)) => bytes.push(b),
+                        _ => break,
                     }
                 }
             }
-        }
-        let many = arrays.len() > 1;
-        for (i, (json, partial_stream)) in arrays.into_iter().enumerate() {
-            let suffix = if many {
-                String::from(char::from(b'a' + i as u8))
-            } else {
-                String::new()
-            };
-            out.push(JsonExample {
-                name: format!("{number}{suffix}"),
-                json,
-                partial_stream,
-            });
-        }
-    }
-    out
+            bytes
+        })
+        .collect()
 }
 
-/// Every `<sensml>` document in a section.
-pub fn xml_examples(section_number: &str) -> Vec<String> {
-    let body = section(&rfc_text(), section_number);
-    let mut out = Vec::new();
-    let mut current: Option<String> = None;
-    for line in body.lines() {
-        let t = line.trim();
-        if t.starts_with("<sensml") {
-            current = Some(String::new());
-        }
-        if let Some(buf) = &mut current {
-            buf.push_str(t);
-            buf.push('\n');
-            if t.ends_with("</sensml>") {
-                out.push(std::mem::take(buf));
-                current = None;
-            }
-        }
-    }
-    out
-}
-
-/// Every hex dump in a section (`0000 a0 30 ...` lines), as bytes. A dump line starts
-/// with a 4-digit hex offset. Reading stops at the first field that is not a 2-digit
-/// hex byte (the ASCII column).
-pub fn hex_dumps(section_number: &str) -> Vec<Vec<u8>> {
-    let body = section(&rfc_text(), section_number);
-    let mut out = Vec::new();
-    let mut current: Vec<u8> = Vec::new();
-    for line in body.lines() {
-        let t = line.trim_start();
-        let mut fields = t.split(' ');
-        let offset = fields.next().unwrap_or("");
-        let is_dump_line = offset.len() == 4 && offset.bytes().all(|b| b.is_ascii_hexdigit());
-        if is_dump_line {
-            for f in fields {
-                match (f.len(), u8::from_str_radix(f, 16)) {
-                    (2, Ok(b)) => current.push(b),
-                    _ => break,
-                }
-            }
-        } else if !current.is_empty() {
-            out.push(std::mem::take(&mut current));
-        }
-    }
-    if !current.is_empty() {
-        out.push(current);
-    }
-    out
-}
-
-/// The XSD of [section 8](https://www.rfc-editor.org/rfc/rfc8428#section-8), as
-/// published (`scripts/fetch-standards.sh` extracts the same text as `senml.xsd`).
+/// The XSD of [section 8](https://www.rfc-editor.org/rfc/rfc8428#section-8), which
+/// `scripts/gen-tables.sh` and `scripts/gen-exi-fixtures.sh` also read.
 pub fn rfc_xsd() -> String {
-    let body = section(&rfc_text(), "8");
-    let mut out = String::new();
-    let mut inside = false;
-    for line in body.lines() {
-        if line.trim_start().starts_with("<?xml") {
-            inside = true;
-        }
-        if inside {
-            out.push_str(line.strip_prefix("   ").unwrap_or(line));
-            out.push('\n');
-            if line.trim() == "</xs:schema>" {
-                break;
-            }
-        }
-    }
-    out
+    excerpt("senml.xsd")
 }
 
 /// Made-up packs that cover every field, value type and edge case the RFC examples

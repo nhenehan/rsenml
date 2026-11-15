@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Regenerates the compiled forms of the SenML schema (RFC 8428 section 8,
-# https://www.rfc-editor.org/rfc/rfc8428#section-8, as rsenml's
-# scripts/fetch-standards.sh extracts it) that
+# https://www.rfc-editor.org/rfc/rfc8428#section-8, the cited excerpt in rsenml's
+# crates/rsenml-tests/fixtures/rfc8428) that
 # two clients need, into schemas/ (committed):
 #
 #   senml.xsd.exi  the schema itself as an EXI stream, which exip loads at run time
@@ -22,8 +22,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-"$ROOT/../../scripts/fetch-standards.sh" --check >/dev/null
-XSD="$("$ROOT/../../scripts/fetch-standards.sh" --print-dir)/senml.xsd"
+XSD="$ROOT/../../crates/rsenml-tests/fixtures/rfc8428/senml.xsd"
 DEPS="$("$ROOT/scripts/fetch-third-party.sh" --print-dir)"
 ORACLE_DIR="$DEPS/exip/utils/xsd2exip"
 JAR="${RSENML_ORACLE_JAR:-$ORACLE_DIR/target/xsd2exip-cli.jar}"

@@ -19,8 +19,6 @@
         <maven.compiler.release>25</maven.compiler.release>
         <californium.version>3.14.0</californium.version>
         <exificient.version>1.0.7</exificient.version>
-        <!-- rsenml's scripts/fetch-standards.sh cache (its default place). -->
-        <rsenml.standards>${user.home}/.cache/rsenml/standards</rsenml.standards>
     </properties>
 
     <dependencies>
@@ -56,10 +54,10 @@
         <finalName>todo-java</finalName>
         <resources>
             <!-- The SenML schema of RFC 8428 section 8
-                 (https://www.rfc-editor.org/rfc/rfc8428#section-8), as rsenml's
-                 scripts/fetch-standards.sh extracts it. -->
+                 (https://www.rfc-editor.org/rfc/rfc8428#section-8), the cited
+                 excerpt in rsenml's crates/rsenml-tests/fixtures/rfc8428. -->
             <resource>
-                <directory>${rsenml.standards}</directory>
+                <directory>${project.basedir}/../../../crates/rsenml-tests/fixtures/rfc8428</directory>
                 <includes>
                     <include>senml.xsd</include>
                 </includes>

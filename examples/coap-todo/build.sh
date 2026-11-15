@@ -35,9 +35,7 @@ wanted rust && built+=(rust)
 if wanted java; then
     if have java && have mvn; then
         echo "building the Java client (maven)" >&2
-        "$HERE/../../scripts/fetch-standards.sh" >/dev/null
-        mvn -q -f "$HERE/java-client/pom.xml" package \
-            -Drsenml.standards="$("$HERE/../../scripts/fetch-standards.sh" --print-dir)"
+        mvn -q -f "$HERE/java-client/pom.xml" package
         built+=(java)
     else
         skip java "needs java and mvn"

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Fetch the standards listed in standards.lock (RFCs, W3C Recommendations) from
-# their publishers into a cache outside the working tree, and extract the parts
-# the tests and generators read (such as a schema printed in an RFC). Standards
-# are linked, never committed.
+# their publishers into a cache outside the working tree, and extract parts of
+# them (such as a schema printed in an RFC). Only the short, cited excerpts in
+# crates/rsenml-tests/fixtures/rfc8428 are committed; the full text is used to
+# check them (crates/rsenml-tests/tests/extract.rs).
 #
 #   scripts/fetch-standards.sh              fetch what is missing, check every sha256
 #   scripts/fetch-standards.sh --check      exit 1 unless every file is present

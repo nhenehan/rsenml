@@ -32,13 +32,6 @@ jobs:
           components: rustfmt, clippy
           targets: thumbv7em-none-eabihf
       - uses: Swatinem/rust-cache@v2
-      - name: Standards cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/rsenml/standards
-          key: standards-${{ hashFiles('standards.lock') }}
-      - name: Standards (RFC 8428, fetched, not committed)
-        run: scripts/fetch-standards.sh
       - name: Third parties (rexi's schema generator)
         run: scripts/fetch-third-party.sh
       - name: rustfmt
@@ -69,13 +62,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@1.88
       - uses: Swatinem/rust-cache@v2
-      - name: Standards cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/rsenml/standards
-          key: standards-${{ hashFiles('standards.lock') }}
-      - name: Standards
-        run: scripts/fetch-standards.sh
       - name: tests
         run: cargo test --workspace
 
@@ -97,8 +83,12 @@ jobs:
         with:
           path: ~/.cache/rsenml/standards
           key: standards-${{ hashFiles('standards.lock') }}
-      - name: Standards
+      - name: Standards (the full RFC 8428 text)
         run: scripts/fetch-standards.sh
+      - name: RFC 8428 excerpts equal to the RFC text
+        run: cargo test -p rsenml-tests --test extract
+        env:
+          RSENML_REQUIRE_STANDARDS: "1"
       - name: Third-party cache
         uses: actions/cache@v4
         with:

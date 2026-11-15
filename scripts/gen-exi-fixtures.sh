@@ -18,9 +18,8 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT="$ROOT/crates/rsenml-tests/fixtures/exificient"
 ORACLE_DIR="$("$ROOT/scripts/fetch-third-party.sh" --print-dir)/exip/utils/xsd2exip"
 JAR="${RSENML_ORACLE_JAR:-$ORACLE_DIR/target/xsd2exip-cli.jar}"
-# The RFC 8428 section 8 schema, from scripts/fetch-standards.sh.
-"$ROOT/scripts/fetch-standards.sh" --check >/dev/null
-XSD="$("$ROOT/scripts/fetch-standards.sh" --print-dir)/senml.xsd"
+# The RFC 8428 section 8 schema (a cited excerpt, see fixtures/rfc8428/README.md).
+XSD="$ROOT/crates/rsenml-tests/fixtures/rfc8428/senml.xsd"
 
 CHECK=0
 case "${1:-}" in

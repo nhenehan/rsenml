@@ -3,10 +3,11 @@
 #   pins, formatting, clippy (no warnings), rustdoc, tests (also on the oldest
 #   supported Rust, rust-version in Cargo.toml), no_std builds of every
 #   representation for Cortex-M4F, generated EXI tables, exported vectors and
-#   EXIficient fixtures up to date.
+#   EXIficient fixtures up to date, RFC 8428 excerpts equal to the RFC text.
 #
 #   scripts/gate.sh           full gate
-#   scripts/gate.sh --quick   skip the EXIficient check (needs Java)
+#   scripts/gate.sh --quick   skip the EXIficient check (needs Java) and the
+#                             RFC excerpt check (needs the downloaded RFC)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -18,9 +19,6 @@ step() { printf '\n== %s\n' "$*"; }
 
 step "third-party pins"
 scripts/fetch-third-party.sh --check
-
-step "standards (RFC text, fetched, not committed)"
-scripts/fetch-standards.sh --check
 
 step "rustfmt"
 cargo fmt --all --check
@@ -59,6 +57,10 @@ step "exported vectors and cases (SenMLFormat)"
 scripts/export-fixtures.sh --check
 
 if [[ $QUICK -eq 0 ]]; then
+    step "RFC 8428 excerpts equal to the RFC text"
+    scripts/fetch-standards.sh
+    RSENML_REQUIRE_STANDARDS=1 cargo test -q -p rsenml-tests --test extract
+
     step "EXIficient reference bytes"
     scripts/gen-exi-fixtures.sh --check 2>&1 | grep -v '^WARNING:'
 fi
