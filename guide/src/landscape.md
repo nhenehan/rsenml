@@ -1,4 +1,4 @@
-# Landscape: Rust SenML and EXI libraries
+# Other Rust SenML and EXI libraries
 
 Surveyed 2026-10-13 by reading source (crates.io `.crate` files and GitHub clones; nothing
 built or run). Download counts from the crates.io API on that date. RFC references are to

@@ -1,5 +1,5 @@
 # Head-to-head comparison of rsenml with the other Rust SenML crates.
-# `cargo run --release` writes ../doc/comparison.md. A standalone workspace:
+# `cargo run --release` writes ../guide/src/comparison.md. A standalone workspace:
 # the main rsenml workspace excludes `compare`.
 [workspace]
 members = [
@@ -28,7 +28,7 @@ version = "0.0.0"
 edition = "2024"
 publish = false
 license = "BSD-3-Clause"
-description = "Compares rsenml with sindit-senml, senml-cbor and coapum-senml; writes ../doc/comparison.md"
+description = "Compares rsenml with sindit-senml, senml-cbor and coapum-senml; writes the comparison page of the user guide"
 
 [dependencies]
 rsenml = { path = "../crates/rsenml" }

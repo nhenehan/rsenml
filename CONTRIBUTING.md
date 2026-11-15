@@ -146,7 +146,7 @@ so the library code avoids both where it can:
 - Error reasons are fixed strings (or concatenations), never `format!` of a
   library's error.
 
-`doc/comparison.md` has the measured sizes of the `compare/` footprint binaries
+The guide's comparison page (`guide/src/comparison.md`) has the measured sizes of the `compare/` footprint binaries
 (`thumbv7em-none-eabihf`, `opt-level = "z"`). Most of what is left in the JSON
 build is `core`'s shortest float printing, which writing text needs; a
 decode-only build does not link it.
@@ -158,9 +158,9 @@ decode-only build does not link it.
   real output. Run `examples/basics/run-all.sh` after a change and update the
   "Run it" blocks. `.github/workflows/guide.yml` publishes it to GitHub Pages
   on every push to `main` that changes it.
-- `doc/comparison.md` is written by `compare/` (`cargo run --release` there).
+- `guide/src/comparison.md` is written by `compare/` (`cargo run --release` there).
   Never edit it by hand.
-- `doc/landscape.md` is a dated survey of the other Rust SenML and EXI crates.
+- `guide/src/landscape.md` is a dated survey of the other Rust SenML and EXI crates.
 
 ## Releasing
 

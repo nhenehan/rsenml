@@ -139,7 +139,7 @@ Test results from rsenml's CI.
 The RFC examples are read from short, cited excerpts of the RFC
 (`crates/rsenml-tests/fixtures/rfc8428`), checked against the full RFC text.
 
-[`doc/comparison.md`](https://github.com/nhenehan/rsenml/blob/main/doc/comparison.md)
+The guide's [comparison page](https://nhenehan.github.io/rsenml/comparison.html)
 compares rsenml with the other Rust SenML crates on the same test vectors: features,
 verdicts, sizes, dependencies, footprint and speed.
 [SenMLFormat](https://github.com/nhenehan/SenMLFormat.jl), the Julia version of

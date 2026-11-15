@@ -26,8 +26,10 @@
 - **Docs in a new layout**: a user guide (`guide/`, published on GitHub Pages)
   with the programs of `examples/basics`; a shorter README with feature,
   standards and conformance tables; `CONTRIBUTING.md`, `AGENTS.md` and
-  `references.md`. `doc/design.md` and `doc/conformance.md` moved into the guide
-  and CONTRIBUTING.md.
+  `references.md`. There is no `doc/` folder any more: `doc/design.md` and
+  `doc/conformance.md` moved into the guide and CONTRIBUTING.md, and the
+  comparison (still written by `compare/`) and the survey of other libraries are
+  guide pages.
 - **Exported test data**: `scripts/export-fixtures.sh` writes the conformance
   vectors and the test cases, with rsenml's verdicts and bytes in every format,
   as TSV in `crates/rsenml-tests/fixtures/export` (for SenMLFormat, the Julia port). The gate

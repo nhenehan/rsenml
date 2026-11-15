@@ -1,6 +1,7 @@
 //! Head-to-head comparison of rsenml with the other Rust SenML crates
 //! (sindit-senml, senml-cbor, coapum-senml). `cargo run --release` from
-//! `compare/` measures everything and writes `../doc/comparison.md`.
+//! `compare/` measures everything and writes `../guide/src/comparison.md`, a page of the
+//! user guide.
 
 mod conformance;
 mod env;
@@ -130,7 +131,7 @@ fn main() {
         "- **Libraries run**: rsenml (this repository), sindit-senml 0.3, senml-cbor 0.1, \
          coapum-senml 0.1 (default features: JSON and CBOR), all from crates.io via \
          `compare/Cargo.lock`. Not run, by licence: senml-deser (OLFL-1.3) and erxi (PolyForm \
-         Noncommercial); their source review is in `doc/landscape.md`."
+         Noncommercial); their source review is in [Other Rust SenML and EXI libraries](landscape.md)."
     );
     let _ = writeln!(
         w,
@@ -506,15 +507,15 @@ fn main() {
     let _ = writeln!(w, "## Not measured\n");
     let _ = writeln!(
         w,
-        "- senml-deser and erxi (licences; see `doc/landscape.md`).\n\
+        "- senml-deser and erxi (licences; see [Other Rust SenML and EXI libraries](landscape.md)).\n\
          - XML and EXI against other libraries: no other Rust crate implements them \
-         (coapum-senml's `xml` feature is a stub, per `doc/landscape.md`).\n\
+         (coapum-senml's `xml` feature is a stub, per [Other Rust SenML and EXI libraries](landscape.md)).\n\
          - Heap allocations per call, and peak memory: not instrumented.\n\
          - Robustness beyond these vectors (fuzzing).\n\
          - Footprint of sindit-senml and coapum-senml (`std` only), and of rsenml `xml`."
     );
 
-    let path = rfc::root().join("doc/comparison.md");
+    let path = rfc::root().join("guide/src/comparison.md");
     match std::fs::write(&path, &md) {
         Ok(()) => println!("wrote {}", path.display()),
         Err(e) => eprintln!("cannot write {}: {e}", path.display()),

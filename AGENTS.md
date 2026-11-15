@@ -121,7 +121,7 @@ downloaded RFC).
   `CONTRIBUTING.md`.
 - Update the guide (`guide/`) when a public API or behaviour changes, and keep
   `examples/basics` building, with each chapter's output pasted from a real run.
-- `doc/comparison.md` comes only from `compare/`.
+- `guide/src/comparison.md` comes only from `compare/`.
 - Prefer direct technical explanations over marketing language.
 
 ## Repository rules

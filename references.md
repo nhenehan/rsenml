@@ -23,5 +23,5 @@
 | [EXIficient](https://github.com/EXIficient/exificient) | Java | Reference EXI bytes (`fixtures/exificient`) |
 | [exip](https://github.com/nhenehan/exip) | C | Its `utils/xsd2exip` runs EXIficient as the oracle; a client in `examples/coap-todo` |
 | [SenMLFormat](https://github.com/nhenehan/SenMLFormat.jl) | Julia | Port of rsenml, tested against `fixtures/export` |
-| [sindit-senml](https://crates.io/crates/sindit-senml), [senml-cbor](https://crates.io/crates/senml-cbor), [coapum-senml](https://crates.io/crates/coapum-senml) | Rust | Compared in `doc/comparison.md` |
-| [senml-deser](https://crates.io/crates/senml-deser), [erxi](https://crates.io/crates/erxi) | Rust | Reviewed (not run) in `doc/landscape.md` |
+| [sindit-senml](https://crates.io/crates/sindit-senml), [senml-cbor](https://crates.io/crates/senml-cbor), [coapum-senml](https://crates.io/crates/coapum-senml) | Rust | Compared in the guide's [comparison page](https://nhenehan.github.io/rsenml/comparison.html) |
+| [senml-deser](https://crates.io/crates/senml-deser), [erxi](https://crates.io/crates/erxi) | Rust | Reviewed (not run) in the guide's [survey](https://nhenehan.github.io/rsenml/landscape.html) |

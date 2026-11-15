@@ -36,4 +36,4 @@ written, or `Error::BufferFull`.
 On `thumbv7em-none-eabihf` with `opt-level = "z"`, a program that decodes,
 validates and encodes one pack takes about 31 KB of code and constants for CBOR,
 43 KB for JSON and 129 KB for EXI (`.text` + `.rodata`, measured by `compare/`;
-see [`doc/comparison.md`](https://github.com/nhenehan/rsenml/blob/main/doc/comparison.md)).
+see [Compared with other Rust crates](comparison.md)).

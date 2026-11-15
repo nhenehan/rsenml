@@ -17,5 +17,7 @@
 
 [Where the RFC is unclear](rfc-choices.md)
 [Conformance checklist](conformance.md)
+[Compared with other Rust crates](comparison.md)
+[Other Rust SenML and EXI libraries](landscape.md)
 [rsenml and SenMLFormat side by side](side-by-side.md)
 [Thanks](thanks.md)
