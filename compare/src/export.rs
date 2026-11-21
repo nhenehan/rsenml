@@ -1,5 +1,5 @@
 //! `cargo run --release -- export <dir>`: writes the conformance vectors and the
-//! test cases as plain TSV files, so other implementations (SenML.jl) can check
+//! test cases as plain TSV files, so other implementations (SenMLFormat.jl) can check
 //! that they give the same results and the same bytes as rsenml.
 //!
 //! `vectors.tsv`: one line per conformance vector (`vectors::all`):
